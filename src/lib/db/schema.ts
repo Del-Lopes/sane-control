@@ -144,8 +144,8 @@ export type Database = {
         Update: Partial<AiAutomationLog>
       }
     }
-    Views: Record<string, never>
-    Functions: Record<string, never>
+    Views: { [key: string]: never }
+    Functions: { [key: string]: never }
     Enums: {
       user_role: UserRole
       post_status: PostStatus
