@@ -36,4 +36,32 @@
   .section {
     @apply py-16 lg:py-24;
   }
+  /* Corpo de post (HTML gerado pela IA) */
+  .prose h2 {
+    @apply mt-10 mb-4 text-2xl font-bold text-ink;
+  }
+  .prose h3 {
+    @apply mt-8 mb-3 text-xl font-bold text-ink;
+  }
+  .prose p {
+    @apply mb-5 text-ink-soft;
+  }
+  .prose ul {
+    @apply mb-5 list-disc space-y-2 pl-6 text-ink-soft;
+  }
+  .prose ol {
+    @apply mb-5 list-decimal space-y-2 pl-6 text-ink-soft;
+  }
+  .prose a {
+    @apply text-brand underline hover:text-brand-dark;
+  }
+  .prose strong {
+    @apply font-semibold text-ink;
+  }
+  .prose blockquote {
+    @apply my-6 border-l-4 border-brand/40 pl-4 italic text-ink-muted;
+  }
+  .prose img {
+    @apply my-6 rounded-2xl;
+  }
 }

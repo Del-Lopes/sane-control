@@ -1,70 +1,142 @@
 /**
- * Posts do blog. Estrutura inicial com conteúdo próprio sobre o ramo.
- * Pode ser migrado futuramente para um CMS ou arquivos Markdown.
+ * Camada de dados do blog — agora lê do Supabase (Fase 3 do ROADMAP_AUTO_BLOG).
+ * Usa o client SSR (anon), que respeita RLS: público só enxerga status='published'.
+ * A categoria oculta de vendas (slug em HIDDEN_SLUGS) é excluída da listagem,
+ * mas continua acessível por URL direta (SEO local indexável).
  */
+import { createSupabaseServerClient } from '@/lib/db/supabase-server'
 
-export type Post = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  date: string; // ISO
-  readingTime: string;
-  category: string;
-  body: string[]; // parágrafos
-};
+// Categorias que não aparecem na listagem do blog (mas são indexáveis por URL).
+export const HIDDEN_SLUGS = ['google'] as const
 
-export const posts: Post[] = [
-  {
-    slug: "como-evitar-baratas-em-casa",
-    title: "Como evitar baratas em casa: 5 hábitos que fazem a diferença",
-    excerpt:
-      "Pequenas mudanças na rotina reduzem drasticamente o risco de infestação. Veja o que fazer no dia a dia.",
-    date: "2026-06-10",
-    readingTime: "4 min",
-    category: "Prevenção",
-    body: [
-      "As baratas estão entre as pragas urbanas mais comuns e também entre as que mais transmitem doenças. A boa notícia é que a prevenção começa com hábitos simples dentro de casa.",
-      "1. Mantenha a cozinha limpa e seca, sem restos de alimentos expostos e sem acúmulo de louça durante a noite.",
-      "2. Vede frestas e ralos, pontos de entrada preferidos por insetos rasteiros. Ralos com fechamento (abre-fecha) ajudam muito.",
-      "3. Descarte o lixo diariamente e mantenha as lixeiras sempre fechadas.",
-      "4. Evite acúmulo de papelão e materiais de reciclagem, que servem de abrigo.",
-      "5. Ao primeiro sinal de infestação, procure um controle profissional. Quanto antes, mais fácil e barato é resolver.",
-    ],
-  },
-  {
-    slug: "importancia-limpeza-caixa-dagua",
-    title: "A importância da limpeza da caixa d'água",
-    excerpt:
-      "A recomendação é higienizar o reservatório a cada seis meses. Entenda por que isso protege a sua saúde.",
-    date: "2026-05-22",
-    readingTime: "3 min",
-    category: "Saúde",
-    body: [
-      "A caixa d'água armazena toda a água que você consome. Com o tempo, sedimentos, sujeira e microrganismos se acumulam nas paredes e no fundo do reservatório.",
-      "A recomendação sanitária é realizar a higienização a cada seis meses, com escovação das paredes e desinfecção adequada.",
-      "Na Sane Control, fazemos a limpeza sem desperdício de água e emitimos o registro do serviço, importante para vistorias e para o controle sanitário de empresas.",
-    ],
-  },
-  {
-    slug: "cupins-como-identificar",
-    title: "Cupins: como identificar antes que seja tarde",
-    excerpt:
-      "Ruídos na madeira, pó fino e asas soltas podem indicar uma infestação. Saiba reconhecer os sinais.",
-    date: "2026-04-30",
-    readingTime: "5 min",
-    category: "Pragas",
-    body: [
-      "Os cupins agem silenciosamente e podem causar sérios danos a móveis e estruturas antes de serem percebidos.",
-      "Fique atento a alguns sinais: pó fino (parecido com serragem) próximo a móveis e batentes, pequenos furos na madeira, ruídos internos e o surgimento de asas soltas após revoadas.",
-      "Existem diferentes tipos de cupim — de madeira seca, subterrâneos e arborícolas — e cada um exige uma abordagem específica. Por isso, o diagnóstico profissional é essencial.",
-    ],
-  },
-];
+/** Post no formato consumido pelas páginas do blog (view model). */
+export type BlogPost = {
+  slug: string
+  title: string
+  excerpt: string
+  content: string // HTML
+  coverImage: string | null
+  date: string // ISO (published_at || created_at)
+  readingTime: string
+  category: string
+  categorySlug: string
+  sourceUrl: string | null
+  seoTitle: string | null
+  seoDescription: string | null
+  isAiCover: boolean
+}
 
-export function getPost(slug: string): Post | undefined {
-  return posts.find((p) => p.slug === slug);
+type PostRow = {
+  slug: string
+  title: string
+  excerpt: string | null
+  content: string
+  cover_image: string | null
+  image_prompt: string | null
+  source_url: string | null
+  seo_title: string | null
+  seo_description: string | null
+  published_at: string | null
+  created_at: string
+  categories: { name: string; slug: string } | { name: string; slug: string }[] | null
+}
+
+const POST_SELECT =
+  'slug,title,excerpt,content,cover_image,image_prompt,source_url,seo_title,seo_description,published_at,created_at,categories(name,slug)'
+
+/** Estima tempo de leitura a partir do HTML (~200 palavras/min). */
+function estimateReadingTime(html: string): string {
+  const words = html.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length
+  return `${Math.max(1, Math.round(words / 200))} min`
+}
+
+function mapRow(row: PostRow): BlogPost {
+  const cat = Array.isArray(row.categories) ? row.categories[0] : row.categories
+  return {
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt ?? '',
+    content: row.content,
+    coverImage: row.cover_image,
+    date: row.published_at ?? row.created_at,
+    readingTime: estimateReadingTime(row.content),
+    category: cat?.name ?? '',
+    categorySlug: cat?.slug ?? '',
+    sourceUrl: row.source_url,
+    seoTitle: row.seo_title,
+    seoDescription: row.seo_description,
+    // Capa gerada por IA quando há prompt de imagem (legenda "imagem conceitual").
+    isAiCover: Boolean(row.image_prompt) && Boolean(row.cover_image),
+  }
+}
+
+/** Lista de posts publicados (exclui a categoria oculta), paginada. */
+export async function getPublishedPosts({
+  page = 1,
+  pageSize = 24,
+}: { page?: number; pageSize?: number } = {}): Promise<BlogPost[]> {
+  const supabase = await createSupabaseServerClient()
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+
+  const { data, error } = await supabase
+    .from('posts')
+    .select(POST_SELECT)
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+    .range(from, to)
+
+  if (error || !data) return []
+  return (data as unknown as PostRow[])
+    .map(mapRow)
+    .filter((p) => !HIDDEN_SLUGS.includes(p.categorySlug as (typeof HIDDEN_SLUGS)[number]))
+}
+
+/** Um post publicado por slug (inclui categoria oculta — acessível por URL direta). */
+export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+  const supabase = await createSupabaseServerClient()
+  const { data, error } = await supabase
+    .from('posts')
+    .select(POST_SELECT)
+    .eq('status', 'published')
+    .eq('slug', slug)
+    .maybeSingle()
+
+  if (error || !data) return null
+  return mapRow(data as unknown as PostRow)
+}
+
+/** Posts relacionados (mesma categoria de preferência), excluindo o atual e os ocultos. */
+export async function getRelatedPosts(post: BlogPost, limit = 2): Promise<BlogPost[]> {
+  const supabase = await createSupabaseServerClient()
+  const { data, error } = await supabase
+    .from('posts')
+    .select(POST_SELECT)
+    .eq('status', 'published')
+    .neq('slug', post.slug)
+    .order('published_at', { ascending: false })
+    .limit(12)
+
+  if (error || !data) return []
+  const all = (data as unknown as PostRow[])
+    .map(mapRow)
+    .filter((p) => !HIDDEN_SLUGS.includes(p.categorySlug as (typeof HIDDEN_SLUGS)[number]))
+
+  const sameCat = all.filter((p) => p.categorySlug === post.categorySlug)
+  const others = all.filter((p) => p.categorySlug !== post.categorySlug)
+  return [...sameCat, ...others].slice(0, limit)
+}
+
+/** Slugs publicados (para generateStaticParams / sitemaps, se necessário). */
+export async function getPublishedSlugs(): Promise<string[]> {
+  const posts = await getPublishedPosts({ pageSize: 100 })
+  return posts.map((p) => p.slug)
 }
 
 export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" });
+  return new Date(iso).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })
 }
