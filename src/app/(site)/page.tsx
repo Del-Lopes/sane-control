@@ -2,11 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { site, whatsappLink, yearsInMarket } from "@/lib/site";
 import { services, differentials, segments } from "@/lib/services";
-import { posts, formatDate } from "@/lib/posts";
+import { getPublishedPosts, formatDate } from "@/lib/posts";
 import SectionHeading from "@/components/SectionHeading";
 import CtaBand from "@/components/CtaBand";
 
-export default function HomePage() {
+// Lê os últimos posts do banco (nascem pelo cron sem novo deploy).
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const latestPosts = await getPublishedPosts({ pageSize: 3 });
   return (
     <>
       {/* Hero */}
@@ -156,7 +160,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {posts.slice(0, 3).map((p) => (
+            {latestPosts.map((p) => (
               <Link key={p.slug} href={`/blog/${p.slug}`} className="group rounded-2xl border border-black/5 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
                 <span className="text-xs font-semibold uppercase tracking-wider text-brand">{p.category}</span>
                 <h3 className="mt-3 text-lg font-bold text-ink group-hover:text-brand">{p.title}</h3>
