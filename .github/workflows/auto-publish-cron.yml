@@ -1,0 +1,33 @@
+name: Auto-publish cron (blog IA)
+
+# Agendador EXTERNO do cron de automação do blog.
+# Motivo: o projeto está no plano Vercel Hobby, que não roda crons de hora em hora
+# de forma confiável (crons Hobby são diários). Este workflow do GitHub Actions
+# chama o endpoint /api/cron/auto-publish a cada hora com o Bearer CRON_SECRET.
+#
+# CONFIGURAR (Settings → Secrets and variables → Actions):
+#   - Secret  CRON_SECRET   = o mesmo valor do .env / Vercel
+#   - Variable SITE_URL      = https://SEU-DOMINIO (ex.: https://www.sanecontrol.com.br)
+
+on:
+  schedule:
+    - cron: '0 * * * *' # a cada hora, no minuto 0 (UTC)
+  workflow_dispatch: {} # permite disparar manualmente pela aba Actions
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar endpoint de automação
+        run: |
+          if [ -z "${SITE_URL}" ]; then echo "SITE_URL não configurada"; exit 1; fi
+          code=$(curl -s -o /tmp/resp.json -w "%{http_code}" \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            "${SITE_URL}/api/cron/auto-publish")
+          echo "HTTP ${code}"
+          echo "Resposta:"; cat /tmp/resp.json; echo
+          # 2xx = sucesso; qualquer outra coisa falha o job para aparecer no histórico.
+          if [ "${code}" -lt 200 ] || [ "${code}" -ge 300 ]; then exit 1; fi
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
