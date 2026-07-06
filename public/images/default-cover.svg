@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Sane Control">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A2A2A"/>
+      <stop offset="1" stop-color="#961B1B"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="600" cy="250" r="92" fill="none" stroke="#DE1E11" stroke-width="14"/>
+  <circle cx="600" cy="250" r="52" fill="none" stroke="#EB3D3D" stroke-width="12"/>
+  <circle cx="600" cy="250" r="14" fill="#DE1E11"/>
+  <text x="600" y="430" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="800" fill="#FFFFFF">Sane <tspan fill="#EB3D3D">Control</tspan></text>
+  <text x="600" y="486" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" fill="#F6D9D9">Controle de Pragas e Saneamento</text>
+</svg>
