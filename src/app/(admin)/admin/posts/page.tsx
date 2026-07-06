@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/server/auth.helpers";
 import { supabaseAdmin } from "@/lib/db/supabase-admin";
 import { formatDate } from "@/lib/posts";
+import ManualGeneratePanel from "@/components/admin/ManualGeneratePanel";
+import PostActions from "@/components/admin/PostActions";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Posts", robots: { index: false } };
@@ -45,6 +47,8 @@ export default async function AdminPostsPage() {
         </div>
       </div>
 
+      <ManualGeneratePanel />
+
       {posts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-black/10 bg-white p-10 text-center text-ink-muted">
           Nenhum post ainda. A automação criará os posts automaticamente quando ativada.
@@ -58,6 +62,7 @@ export default async function AdminPostsPage() {
                 <th className="px-5 py-3 font-semibold">Categoria</th>
                 <th className="px-5 py-3 font-semibold">Status</th>
                 <th className="px-5 py-3 font-semibold">Data</th>
+                <th className="px-5 py-3 font-semibold">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -74,6 +79,9 @@ export default async function AdminPostsPage() {
                     </td>
                     <td className="px-5 py-3 text-ink-muted">
                       {formatDate(p.published_at ?? p.created_at)}
+                    </td>
+                    <td className="px-5 py-3">
+                      <PostActions postId={p.id} status={p.status} />
                     </td>
                   </tr>
                 );

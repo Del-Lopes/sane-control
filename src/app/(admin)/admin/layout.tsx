@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 const nav = [
   { href: "/admin/posts", label: "Posts" },
   { href: "/admin/automation/settings", label: "Automação" },
+  { href: "/admin/automation/logs", label: "Logs" },
 ];
 
 // Layout do admin. Marca: vermelho (#DE1E11) + branco. O chrome (sidebar/topo)
