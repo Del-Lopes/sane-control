@@ -116,6 +116,9 @@ function hasNicheRelevance(text: string): boolean {
 function scoreArticle(article: NewsArticle, topic: string, category: Category): number {
   const text = `${article.title} ${article.description}`.toLowerCase()
   let score = 0
+  // Bônus de nicho: o que importa é ser do nicho, não a fonte. Garante que qualquer
+  // notícia relevante (mesmo de portal regional) fique acima do threshold.
+  if (hasNicheRelevance(text)) score += 3
   const tier = sourceTier(article.source)
   if (tier === 1) score += 3
   else if (tier === 2) score += 2
@@ -126,9 +129,12 @@ function scoreArticle(article: NewsArticle, topic: string, category: Category): 
   for (const kw of NEGATIVE_KEYWORDS) if (text.includes(kw)) score -= 5
   return score
 }
-// Limiar mais alto (era 1). Combinado com o requisito de relevância de nicho abaixo,
-// rejeita notícias amplas de saúde/geral que não tratam de pragas/dengue/saneamento.
-const SCORE_THRESHOLD = 5
+// O "portão duro" de relevância é o hasNicheRelevance() no loop principal — ele
+// já garante que a notícia trata do nicho. O SCORE serve para ORDENAR/priorizar,
+// não para barrar: por isso o threshold é baixo (notícias relevantes aparecem em
+// veículos regionais tier-0/2 que pontuam pouco). Threshold alto (ex.: 5) barrava
+// notícias boas de escorpião/dengue de portais menores.
+const SCORE_THRESHOLD = 1
 
 function isJunk(a: NewsArticle): boolean {
   return !a.title || a.title.length < 20 || !a.url
