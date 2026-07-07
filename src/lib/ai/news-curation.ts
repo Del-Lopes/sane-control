@@ -42,10 +42,12 @@ function detectCategory(topic: string): Category {
 }
 
 // Query em pt-BR focada no nicho, por tópico. Para NewsAPI com language=pt.
+// Evitar termos AMBÍGUOS soltos (ex.: "barata" = inseto OU preço; "rato" idem).
+// Preferir termos inequívocos do nicho ou frases ("controle de pragas").
 const TOPIC_QUERY: Array<[RegExp, string]> = [
-  [/dengue|aedes/i, '(dengue OR "Aedes aegypti" OR arbovirose OR chikungunya OR zika OR "foco do mosquito")'],
-  [/praga/i, '("controle de pragas" OR dedetização OR desratização OR descupinização OR barata OR roedor OR cupim OR escorpião OR infestação)'],
-  [/saneamento|agua|saúde/i, '(saneamento OR "vigilância sanitária" OR "caixa d\'água" OR "água potável" OR zoonose OR "doenças transmitidas")'],
+  [/dengue|aedes/i, '(dengue OR "Aedes aegypti" OR arbovirose OR chikungunya OR zika OR "foco do mosquito" OR "mosquito da dengue")'],
+  [/praga/i, '("controle de pragas" OR dedetização OR desratização OR descupinização OR cupim OR cupins OR escorpião OR roedores OR "infestação de")'],
+  [/saneamento|agua|saúde/i, '(saneamento OR "vigilância sanitária" OR "caixa d\'água" OR "água potável" OR zoonose OR "doenças transmitidas por")'],
 ]
 function expandQueryBilingual(topic: string): string {
   for (const [pattern, query] of TOPIC_QUERY) if (pattern.test(topic)) return query
@@ -100,14 +102,19 @@ const NEGATIVE_KEYWORDS = ['celebridade', 'politica', 'crime', 'cripto', 'futebo
 // Termos que marcam relevância REAL para o nicho da Sane Control. Uma notícia
 // PRECISA bater em pelo menos um destes para ser considerada — assim uma notícia
 // de saúde geral (ex.: vacina VSR) de fonte confiável não passa só por ser tier-1.
+// Termos INEQUÍVOCOS do nicho. Evitados: "barata"/"rato" no singular (homônimos de
+// "mais barata"/preço e "rato" gíria) — usar plural "baratas"/"ratos" ou termos claros.
 const NICHE_TERMS = [
-  'praga', 'pragas', 'barata', 'baratas', 'rato', 'ratos', 'roedor', 'cupim', 'cupins',
-  'inseto', 'insetos', 'escorpiao', 'escorpioes', 'formiga', 'mosquito', 'mosquitos',
-  'pulga', 'carrapato', 'dengue', 'aedes', 'zika', 'chikungunya', 'arbovirose',
-  'dedetizacao', 'dedetizar', 'desinsetizacao', 'desratizacao', 'descupinizacao',
-  'infestacao', 'vetor', 'zoonose', 'zoonoses', 'sanitizacao', 'saneamento',
-  'caixa d', 'reservatorio', 'agua potavel', 'vigilancia sanitaria', 'foco do mosquito',
-  'pest control', 'rodent', 'termite',
+  'controle de pragas', 'praga urbana', 'pragas urbanas', 'baratas', 'ratos', 'roedor',
+  'roedores', 'cupim', 'cupins', 'escorpiao', 'escorpião', 'escorpioes', 'escorpiões',
+  'mosquito', 'mosquitos', 'pulga', 'pulgas', 'carrapato', 'carrapatos',
+  'dengue', 'aedes', 'zika', 'chikungunya', 'arbovirose', 'arboviroses',
+  'dedetizacao', 'dedetização', 'dedetizar', 'desinsetizacao', 'desinsetização',
+  'desratizacao', 'desratização', 'descupinizacao', 'descupinização',
+  'infestacao', 'infestação', 'zoonose', 'zoonoses', 'sanitizacao', 'sanitização',
+  'saneamento', "caixa d'agua", "caixa d'água", 'reservatorio de agua', 'agua potavel',
+  'água potável', 'vigilancia sanitaria', 'vigilância sanitária', 'foco do mosquito',
+  'pest control', 'termite',
 ]
 function hasNicheRelevance(text: string): boolean {
   return NICHE_TERMS.some((kw) => text.includes(kw))
@@ -240,15 +247,20 @@ async function fetchFromNewsAPI(apiKey: string, topic: string, domains: string):
 export const fetchNewsByTopic = async (topic: string): Promise<NewsArticle[]> => {
   const category = detectCategory(topic)
   const apiKey = process.env.NEWS_API_KEY
-  const [rssArticles, newsapiArticles] = await Promise.all([
-    fetchMultipleFeeds(RSS_BY_CATEGORY[category]),
-    apiKey && NEWSAPI_DOMAINS[category]
-      ? fetchFromNewsAPI(apiKey, topic, NEWSAPI_DOMAINS[category]!)
-      : Promise.resolve([] as NewsArticle[]),
-  ])
+
+  // A NewsAPI (queries de nicho por palavra-chave) é MUITO mais precisa que o RSS
+  // amplo (feeds de saúde/geral mencionam termos do nicho de passagem em notícias
+  // que não são do tema). Estratégia: usar NewsAPI como fonte principal; só cair no
+  // RSS quando a NewsAPI não retornar nada (sem key, quota estourada, ou 0 resultados).
+  const newsapiArticles = apiKey
+    ? await fetchFromNewsAPI(apiKey, topic, NEWSAPI_DOMAINS[category] ?? '')
+    : []
+  const rssArticles =
+    newsapiArticles.length === 0 ? await fetchMultipleFeeds(RSS_BY_CATEGORY[category]) : []
+
   const seenTitles = new Set<string>()
   const rawScored: Array<{ article: NewsArticle; score: number }> = []
-  for (const article of [...rssArticles, ...newsapiArticles]) {
+  for (const article of [...newsapiArticles, ...rssArticles]) {
     if (isJunk(article)) continue
     const norm = normaliseTitle(article.title)
     if (seenTitles.has(norm)) continue
