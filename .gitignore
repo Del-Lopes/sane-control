@@ -9,3 +9,7 @@ npm-debug.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Rascunho e fotos ainda não usadas no site (mantidos só localmente por ora)
+/Rascunho
+/public/images/WhatsApp Image*.jpeg
