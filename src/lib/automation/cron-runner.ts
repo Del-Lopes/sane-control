@@ -3,7 +3,7 @@ import { publishScheduledPosts } from '@/lib/automation/publish-scheduler'
 import { fetchNewsByTopic } from '@/lib/ai/news-curation'
 import { generatePostContent } from '@/lib/ai/content-generator'
 import { generateSalesPostContent } from '@/lib/ai/sales-post-generator'
-import { generateCoverImage } from '@/lib/utils/hf-image'
+import { generateAndPersistCover } from '@/lib/utils/hf-image'
 import { pickService } from '@/lib/automation/sane-services'
 import type {
   AutomationSettings,
@@ -118,29 +118,6 @@ async function markCityUsed(cityId: string, currentCount: number, today: string)
     .eq('id', cityId)
 }
 
-// ── Persiste imagem gerada no Storage (URLs temporárias do HF expiram) ──
-async function persistImageToStorage(tempUrl: string): Promise<string> {
-  try {
-    const res = await fetch(tempUrl)
-    if (!res.ok) return tempUrl
-    const buffer = await res.arrayBuffer()
-    const contentType = res.headers.get('content-type') ?? 'image/jpeg'
-    const ext = contentType.split('/')[1]?.split(';')[0] ?? 'jpg'
-    const path = `ai-generated/${Date.now()}.${ext}`
-    const { error } = await supabaseAdmin.storage
-      .from('cover-images')
-      .upload(path, Buffer.from(buffer), {
-        contentType,
-        cacheControl: '31536000',
-        upsert: false,
-      })
-    if (error) return tempUrl
-    return supabaseAdmin.storage.from('cover-images').getPublicUrl(path).data.publicUrl
-  } catch {
-    return tempUrl
-  }
-}
-
 async function resolveCategory(name: string, slug: string, description: string): Promise<string> {
   const { data: existing } = await supabaseAdmin
     .from('categories')
@@ -239,11 +216,9 @@ async function runNewsPipeline(
         description: article.description,
         density: article.density ?? 'general',
       })
-      const { url: imgUrl, origin: imgOrigin } = await generateCoverImage(generated.image_prompt)
-      const coverImage =
-        imgOrigin === 'flux' || imgOrigin === 'imagen4'
-          ? await persistImageToStorage(imgUrl)
-          : imgUrl
+      const { url: coverImage, origin: imgOrigin } = await generateAndPersistCover(
+        generated.image_prompt
+      )
       const { status, publishedAt } = getPublishInfo(
         slot,
         date,

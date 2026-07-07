@@ -89,3 +89,38 @@ export const generateCoverImage = async (prompt: string): Promise<CoverImageResu
   if (unsplash) return { url: unsplash, origin: 'unsplash' }
   return { url: DEFAULT_COVER, origin: 'default' }
 }
+
+// Persiste imagem no bucket cover-images (URLs do FLUX/HF são temporárias e expiram).
+// Só faz sentido para origens flux/imagen4; unsplash/default já são estáveis.
+export async function persistImageToStorage(tempUrl: string): Promise<string> {
+  const { supabaseAdmin } = await import('@/lib/db/supabase-admin')
+  try {
+    const res = await fetch(tempUrl)
+    if (!res.ok) return tempUrl
+    const buffer = await res.arrayBuffer()
+    const contentType = res.headers.get('content-type') ?? 'image/jpeg'
+    const ext = contentType.split('/')[1]?.split(';')[0] ?? 'jpg'
+    const path = `ai-generated/${Date.now()}.${ext}`
+    const { error } = await supabaseAdmin.storage
+      .from('cover-images')
+      .upload(path, Buffer.from(buffer), {
+        contentType,
+        cacheControl: '31536000',
+        upsert: false,
+      })
+    if (error) return tempUrl
+    return supabaseAdmin.storage.from('cover-images').getPublicUrl(path).data.publicUrl
+  } catch {
+    return tempUrl
+  }
+}
+
+// Gera a capa e, se for de origem temporária (flux/imagen4), persiste no Storage.
+// Retorna sempre uma URL durável (ou a default). Usar em geração manual e no cron.
+export async function generateAndPersistCover(prompt: string): Promise<CoverImageResult> {
+  const result = await generateCoverImage(prompt)
+  if (result.origin === 'flux' || result.origin === 'imagen4') {
+    return { url: await persistImageToStorage(result.url), origin: result.origin }
+  }
+  return result
+}

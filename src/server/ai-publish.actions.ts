@@ -5,7 +5,7 @@ import { requireAdmin } from '@/server/auth.helpers'
 import { fetchNewsByTopic } from '@/lib/ai/news-curation'
 import { generatePostContent } from '@/lib/ai/content-generator'
 import { generateSalesPostContent } from '@/lib/ai/sales-post-generator'
-import { generateCoverImage } from '@/lib/utils/hf-image'
+import { generateAndPersistCover } from '@/lib/utils/hf-image'
 import { pickService } from '@/lib/automation/sane-services'
 import { revalidatePath } from 'next/cache'
 
@@ -69,7 +69,7 @@ export async function generateNewsPostDraft(topic: string): Promise<AiActionResu
       url: article.url,
       description: article.description,
     })
-    const { url: imgUrl, origin } = await generateCoverImage(generated.image_prompt)
+    const { url: imgUrl, origin } = await generateAndPersistCover(generated.image_prompt)
     const categoryId = await resolveCategoryId('pragas-urbanas', 'Pragas Urbanas')
     if (!categoryId) return { error: 'Categoria não encontrada.' }
 
