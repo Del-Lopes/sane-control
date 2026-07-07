@@ -3,10 +3,12 @@ import { GoogleGenerativeAI, type GenerativeModel } from '@google/generative-ai'
 // ⚠️ Nomes de modelo: validar na Fase 5 ao vivo (Risco #2 do roadmap). Alguns nomes
 // "preview" do código de referência podem não existir na key. Usamos nomes estáveis
 // do free tier; se algum retornar 404, trocar aqui (ponto único de verdade).
+// Validados ao vivo na key do cliente em 2026-07-07 (os 2.0-flash* estavam
+// RESOURCE_EXHAUSTED e os gemma-4* davam INTERNAL). Estes 3 respondem OK.
 export const MODEL_NAMES = {
-  content: 'gemini-2.0-flash',
-  gemma: 'gemma-2-27b-it',
-  gemma4: 'gemini-2.0-flash-lite',
+  content: 'gemini-2.5-flash',
+  gemma: 'gemini-2.5-flash-lite',
+  gemma4: 'gemini-flash-lite-latest',
 } as const
 
 // Inicialização PREGUIÇOSA: a key só é lida (e validada) no primeiro uso em runtime —
