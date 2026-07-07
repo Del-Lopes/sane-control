@@ -41,20 +41,16 @@ function detectCategory(topic: string): Category {
   return 'saude'
 }
 
-// Expansão PT->EN aplicada ao `q` da NewsAPI (para feeds em inglês retornarem)
-const BILINGUAL_EXPANSION: Array<[RegExp, string[]]> = [
-  [/pragas?/i, ['pest control', 'pest infestation']],
-  [/dengue|aedes/i, ['dengue', 'aedes aegypti', 'mosquito borne disease']],
-  [/cupins?/i, ['termite', 'termite control']],
-  [/roedor|ratos?/i, ['rodent', 'rodent control']],
-  [/saneamento|agua/i, ['sanitation', 'water treatment']],
+// Query em pt-BR focada no nicho, por tópico. Para NewsAPI com language=pt.
+const TOPIC_QUERY: Array<[RegExp, string]> = [
+  [/dengue|aedes/i, '(dengue OR "Aedes aegypti" OR arbovirose OR chikungunya OR zika OR "foco do mosquito")'],
+  [/praga/i, '("controle de pragas" OR dedetização OR desratização OR descupinização OR barata OR roedor OR cupim OR escorpião OR infestação)'],
+  [/saneamento|agua|saúde/i, '(saneamento OR "vigilância sanitária" OR "caixa d\'água" OR "água potável" OR zoonose OR "doenças transmitidas")'],
 ]
 function expandQueryBilingual(topic: string): string {
-  const extras = new Set<string>()
-  for (const [pattern, equivalents] of BILINGUAL_EXPANSION)
-    if (pattern.test(topic)) equivalents.forEach((e) => extras.add(e))
-  if (extras.size === 0) return topic
-  return `${topic} OR ${[...extras].join(' OR ')}`
+  for (const [pattern, query] of TOPIC_QUERY) if (pattern.test(topic)) return query
+  // fallback: usa o tópico + termos gerais de nicho
+  return `${topic} OR "controle de pragas" OR dengue`
 }
 
 // ⚠️ Feeds RSS reais do setor — VALIDAR AO VIVO (Risco #5). Fontes brasileiras de saúde
@@ -77,11 +73,14 @@ const RSS_BY_CATEGORY: Record<Category, string[]> = {
     'https://agenciabrasil.ebc.com.br/rss/saude/feed.xml',
   ],
 }
+// null = busca em toda a imprensa pt (language=pt), filtrada pela query de nicho.
+// Assim a NewsAPI encontra notícias específicas de pragas/dengue em qualquer veículo,
+// não só nos 2 domínios antes fixados.
 const NEWSAPI_DOMAINS: Record<Category, string | null> = {
-  pragas: 'agenciabrasil.ebc.com.br,g1.globo.com',
-  saude: 'agenciabrasil.ebc.com.br,g1.globo.com',
-  dengue: 'agenciabrasil.ebc.com.br,g1.globo.com',
-  saneamento: 'agenciabrasil.ebc.com.br',
+  pragas: null,
+  saude: null,
+  dengue: null,
+  saneamento: null,
 }
 
 const TIER1_NAMES = new Set(['agencia brasil', 'agenciabrasil', 'fiocruz', 'paho', 'opas'])
@@ -98,6 +97,22 @@ const POSITIVE_KEYWORDS = [
 ]
 const NEGATIVE_KEYWORDS = ['celebridade', 'politica', 'crime', 'cripto', 'futebol', 'receita', 'novela', 'bbb']
 
+// Termos que marcam relevância REAL para o nicho da Sane Control. Uma notícia
+// PRECISA bater em pelo menos um destes para ser considerada — assim uma notícia
+// de saúde geral (ex.: vacina VSR) de fonte confiável não passa só por ser tier-1.
+const NICHE_TERMS = [
+  'praga', 'pragas', 'barata', 'baratas', 'rato', 'ratos', 'roedor', 'cupim', 'cupins',
+  'inseto', 'insetos', 'escorpiao', 'escorpioes', 'formiga', 'mosquito', 'mosquitos',
+  'pulga', 'carrapato', 'dengue', 'aedes', 'zika', 'chikungunya', 'arbovirose',
+  'dedetizacao', 'dedetizar', 'desinsetizacao', 'desratizacao', 'descupinizacao',
+  'infestacao', 'vetor', 'zoonose', 'zoonoses', 'sanitizacao', 'saneamento',
+  'caixa d', 'reservatorio', 'agua potavel', 'vigilancia sanitaria', 'foco do mosquito',
+  'pest control', 'rodent', 'termite',
+]
+function hasNicheRelevance(text: string): boolean {
+  return NICHE_TERMS.some((kw) => text.includes(kw))
+}
+
 function scoreArticle(article: NewsArticle, topic: string, category: Category): number {
   const text = `${article.title} ${article.description}`.toLowerCase()
   let score = 0
@@ -111,7 +126,9 @@ function scoreArticle(article: NewsArticle, topic: string, category: Category): 
   for (const kw of NEGATIVE_KEYWORDS) if (text.includes(kw)) score -= 5
   return score
 }
-const SCORE_THRESHOLD = 1
+// Limiar mais alto (era 1). Combinado com o requisito de relevância de nicho abaixo,
+// rejeita notícias amplas de saúde/geral que não tratam de pragas/dengue/saneamento.
+const SCORE_THRESHOLD = 5
 
 function isJunk(a: NewsArticle): boolean {
   return !a.title || a.title.length < 20 || !a.url
@@ -175,8 +192,11 @@ async function fetchFromNewsAPI(apiKey: string, topic: string, domains: string):
   const timer = setTimeout(() => controller.abort(), 8000)
   try {
     const url = new URL('https://newsapi.org/v2/everything')
+    // Query focada no nicho, em pt-BR. `domains` fica como parâmetro opcional
+    // (passar string vazia = busca em toda a imprensa pt, filtrada pela query).
     url.searchParams.set('q', expandQueryBilingual(topic))
-    url.searchParams.set('domains', domains)
+    url.searchParams.set('language', 'pt')
+    if (domains) url.searchParams.set('domains', domains)
     url.searchParams.set('sortBy', 'publishedAt')
     url.searchParams.set('pageSize', '20')
     url.searchParams.set('apiKey', apiKey)
@@ -227,6 +247,9 @@ export const fetchNewsByTopic = async (topic: string): Promise<NewsArticle[]> =>
     const norm = normaliseTitle(article.title)
     if (seenTitles.has(norm)) continue
     seenTitles.add(norm)
+    // Requisito duro: precisa ter relevância REAL de nicho (não basta ser fonte boa).
+    const text = `${article.title} ${article.description}`.toLowerCase()
+    if (!hasNicheRelevance(text)) continue
     const score = scoreArticle(article, topic, category)
     if (score < SCORE_THRESHOLD) continue
     rawScored.push({ article, score })
