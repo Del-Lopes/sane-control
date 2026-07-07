@@ -76,13 +76,15 @@ Antes da Fase 1, o usuário providencia as contas abaixo. Todas têm plano gratu
 | **Google AI Studio** (key) | Geração de texto (Gemini/Gemma) | `GOOGLE_AI_API_KEY` | **Sim** |
 | Google AI Studio (2ª key) | Curadoria / dividir cota | `GOOGLE_AI_API_KEY_SEARCH` | Não |
 | **Groq** | Llama 70B p/ conteúdo denso | `GROQ_API_KEY` | Não |
-| **HuggingFace** (token) | Imagem de capa (FLUX) | `HF_TOKEN` | Não |
-| **NewsAPI** | Suplemento de notícias além do RSS | `NEWS_API_KEY` | Não |
-| **Unsplash** | 3º fallback de imagem | `UNSPLASH_ACCESS_KEY` | Não |
+| **HuggingFace** (token) | Imagem de capa (FLUX) — key em [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens), tipo **Read** (`hf_...`) | `HF_TOKEN` | **Recomendado** |
+| **NewsAPI** | Notícias filtradas por palavra-chave além do RSS — key em [newsapi.org/register](https://newsapi.org/register) (plano Developer grátis) | `NEWS_API_KEY` | **Recomendado** |
+| **Unsplash** | Fotos reais como fallback de imagem — key em [unsplash.com/developers](https://unsplash.com/developers) | `UNSPLASH_ACCESS_KEY` | Não |
 | **CRON_SECRET** (você inventa) | Proteger o endpoint de cron | `CRON_SECRET` | **Sim** (produção) |
 | **AI_BOT_PROFILE_ID** | UUID do perfil autor dos posts bot | `AI_BOT_PROFILE_ID` | **Sim** (gerado na Fase 4) |
 
 **Estritamente obrigatórios para o cron rodar:** `GOOGLE_AI_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (+ URL e anon), `AI_BOT_PROFILE_ID`, `CRON_SECRET` e a linha singleton `automation_settings`. Todo o resto degrada com fallback.
+
+> **Por que `HF_TOKEN` e `NEWS_API_KEY` são "Recomendados" (não só "Não"):** sem eles a feature funciona, mas com qualidade menor. **Sem `HF_TOKEN`** o FLUX roda em modo anônimo — instável, rate-limit rápido, capas que falham (cai no fallback). **Com o token**, a geração de imagem fica estável. **Sem `NEWS_API_KEY`** o pipeline usa só RSS, que costuma ser amplo demais (traz notícias fora do nicho); **com a NewsAPI** você busca por palavra-chave (`dengue`, `controle de pragas`…) em toda a imprensa, e o filtro de nicho (ver Fase 5, #4) descarta o ruído. Recomendação prática: configure os dois já na Fase 5 e teste ao vivo.
 
 ---
 
@@ -182,20 +184,24 @@ Antes da Fase 1, o usuário providencia as contas abaixo. Todas têm plano gratu
 
 **Objetivo:** portar os módulos de IA — **copiar de [B-6]** — adaptando **apenas** os pontos de negócio (prompts, fontes, catálogo) via `PERFIL-DO-NEGOCIO.md`.
 
-**🛑 STOP HUMANO:** garantir `GOOGLE_AI_API_KEY` (obrigatória) e, se possível, `GROQ_API_KEY`, `HF_TOKEN`, `NEWS_API_KEY`, `UNSPLASH_ACCESS_KEY`.
+**🛑 STOP HUMANO:** garantir `GOOGLE_AI_API_KEY` (obrigatória). **Fortemente recomendado** já configurar aqui `HF_TOKEN` (imagem de capa estável) e `NEWS_API_KEY` (notícias relevantes) — ver *Serviços externos*. Opcionais: `GROQ_API_KEY`, `UNSPLASH_ACCESS_KEY`.
 
 **Tarefas / módulos (copiar de [B-6] e adaptar):**
 1. Deps: `@google/generative-ai`, `groq-sdk`, `@gradio/client`, `rss-parser`, `zod`.
 2. `src/lib/ai/google-ai-client.ts` — [B-6.1]. **Verificar disponibilidade dos nomes de modelo** nas suas keys (alguns são "preview" e podem exigir troca de versão).
 3. `src/lib/ai/rss-fetcher.ts` — [B-6.3]. Trocar o User-Agent do bot.
 4. `src/lib/ai/news-curation.ts` — [B-6.4]. **Adaptar** feeds RSS, domínios NewsAPI, keywords de categoria/scoring e expansão bilíngue ao setor (ver *Adaptações* #3–#4).
+   - **NewsAPI (recomendado):** com `NEWS_API_KEY` setada, busque por **palavra-chave em pt** (`language=pt`, sem trava de domínio) com queries focadas no nicho por tópico — muito mais relevante que RSS amplo. Sem a key, cai só no RSS.
+   - **Filtro anti-ruído (lição de produção):** fonte confiável **não basta**. Exija **relevância real de nicho**: mantenha uma lista `NICHE_TERMS` (pragas, dengue, aedes, saneamento, zoonose…) e **descarte** qualquer artigo que não cite nenhum termo — senão notícias amplas de saúde/geral passam. Suba o `SCORE_THRESHOLD` (ex.: 1 → 5). Teste ao vivo e confira o que passa/rejeita.
 5. `src/lib/ai/content-generator.ts` — [B-6.5]. **Adaptar** o `SYSTEM_PROMPT` ao domínio do negócio (ver #5). Renomear o import do "closing" (#7).
 6. `src/lib/ai/sales-post-generator.ts` — [B-6.6]. **Substituir TODOS** os dados da empresa no `SYSTEM_PROMPT` pelos do `PERFIL-DO-NEGOCIO.md` (#6).
 7. `src/lib/ai/<empresa>-closing.ts` — [B-6.7]. Reescrever categorias/URLs (linkar para as páginas de serviço do site), CTA e `BASE_URL` (#7).
-8. `src/lib/utils/hf-image.ts` [B-6.8] + `src/lib/utils/image-providers.ts` [B-6.9]. Adicionar um `public/images/default-cover.webp` de marca.
+8. `src/lib/utils/hf-image.ts` [B-6.8] + `src/lib/utils/image-providers.ts` [B-6.9]. Adicionar um `public/images/default-cover` de marca (SVG serve).
+   - **HF_TOKEN (recomendado):** o FLUX roda sem token em modo anônimo, mas é **instável** (rate-limit, timeouts, capas que falham). Com `HF_TOKEN` (tipo Read) a geração fica estável. Cascata: FLUX → backup imagen4 → Unsplash (se `UNSPLASH_ACCESS_KEY`) → capa padrão da marca.
+   - As URLs do FLUX são **temporárias** (`.hf.space/...`) → o cron persiste a imagem no bucket `cover-images` do Storage (ver [B-7.2] `persistImageToStorage`). Sem isso, a capa quebra quando a URL expira.
 9. `src/lib/automation/<empresa>-services.ts` — [B-6.10]: lista de serviços/produtos + `pickService(date, slot)` determinístico (#1).
 
-**Aceite:** `generatePostContent` com um título fake retorna HTML pt-BR válido; `fetchNewsByTopic('<tema do setor>')` retorna artigos reais; `generateCoverImage` retorna uma URL (mesmo que fallback default).
+**Aceite:** `generatePostContent` com um título fake retorna HTML pt-BR válido; `fetchNewsByTopic('<tema do setor>')` retorna artigos reais **e relevantes ao nicho** (o filtro descarta notícias amplas de fora do nicho); `generateCoverImage` retorna uma URL (idealmente do FLUX autenticado; no pior caso o fallback default).
 
 ---
 
@@ -304,7 +310,7 @@ Antes da Fase 1, o usuário providencia as contas abaixo. Todas têm plano gratu
 - [x] Fase 2 — Schema do banco (migrations SQL) ✅ Aceite OK 2026-07-06: 7 tabelas + RLS; 5 categorias + oculta `google`; 12 cidades RMSP; singleton `automation_settings` (is_enabled=false); bucket público `cover-images`.
 - [x] Fase 3 — Blog dinâmico ✅ 2026-07-06: `posts.ts` reescrito p/ ler do Supabase (getPublishedPosts/getPostBySlug/getRelatedPosts, HIDDEN_SLUGS=['google']); `PostContent` (HTML sanitizado); `/blog`, `/blog/[slug]` e home `force-dynamic`; SEO via seo_*/cover_image; "Fonte original" + legenda "imagem conceitual por IA"; `.prose` no globals.css. Aceite validado com dados temporários (post published aparece sem rebuild; draft→404; oculto fora da lista mas 200 por URL) e depois limpos. **DESVIO: migração dos 3 posts antigos adiada p/ Fase 4** (posts.author_id é FK NOT NULL p/ profiles; usar o profile do bot criado na Fase 4).
 - [x] Fase 4 — Auth + admin base ✅ 2026-07-06: route groups (site)/(admin), middleware, loginAction/logoutAction, requireAdmin, layout admin, /admin/posts, /admin/login. Admin user + bot profile criados; AI_BOT_PROFILE_ID validado (aponta p/ role ai_bot). 3 posts legados migrados (published, autor=bot) e aparecendo no blog/home/admin. Aceite: redirects 307, role-gate, senha errada→erro genérico, login admin OK. (Falta só confirmação visual do login no navegador pelo usuário.)
-- [~] Fase 5 — Camada de IA — código completo ✅ (typecheck OK; commit 0b90058). Módulos em src/lib/ai (google-ai-client, rss-fetcher UA=SaneControlBot, news-curation p/ pragas/dengue/saúde/saneamento, content-generator, sales-post-generator c/ dados reais+WhatsApp, sane-closing→/servicos/[slug]), src/lib/utils (hf-image, image-providers, default-cover.svg), src/lib/automation/sane-services (pickService). Feeds RSS validados ao vivo (Agência Brasil saúde OK). **PENDENTE p/ Aceite:** GOOGLE_AI_API_KEY correta (AIza...) p/ gerar texto+validar nomes de modelo (Risco #2). Ajustes possíveis: OPAS retorna espanhol; feed "geral" traz off-topic (scoring filtra).
+- [x] Fase 5 — Camada de IA ✅ (commits 0b90058, 2b5f911, 1bb5ed0). Módulos em src/lib/ai (google-ai-client c/ modelos gemini-2.5-flash*, rss-fetcher UA=SaneControlBot, news-curation, content-generator, sales-post-generator c/ dados reais+WhatsApp, sane-closing→/servicos/[slug]), src/lib/utils (hf-image, image-providers, default-cover.svg), src/lib/automation/sane-services. **NewsAPI ativa** (language=pt, queries de nicho) + **filtro NICHE_TERMS** (descarta notícias fora do nicho; SCORE_THRESHOLD=5). **HF_TOKEN** configurado (FLUX estável). Aceite validado ao vivo: gera artigo pt-BR HTML, notícias relevantes filtradas (6 de 29 cruas), FLUX autenticado gera imagem.
 - [~] Fase 6 — Pipeline de automação (cron-runner) — código completo ✅ (build+typecheck OK; commit 329f4cb). publish-scheduler.ts + cron-runner.ts (runAutomation, news+sales pipelines, idempotência, slots, timezone SP, dedup source_url, categoria oculta google). NEWS_TOPICS: pragas-urbanas/dengue-e-arboviroses/saude-e-saneamento (casam c/ seeds). Lógica de banco validada ao vivo. **PENDENTE p/ Aceite:** desbloqueio Google (gerar posts de verdade). DESVIO técnico: supabase-admin sem generic Database (inserts colapsavam p/ never).
 - [x] Fase 7 — Endpoint de cron + agendamento ✅ 2026-07-06 (commit 6bfa71b). `/api/cron/auto-publish` (maxDuration=60 p/ Hobby, valida Bearer CRON_SECRET). Agendador EXTERNO: GitHub Actions `.github/workflows/auto-publish-cron.yml` (horário) — precisa dos secrets CRON_SECRET + var SITE_URL no GitHub. vercel.json com cron diário de segurança. Aceite: sem/errado Bearer→401; correto→200+JSON (runAutomation executou). Geração real ainda depende do Google.
 - [x] Fase 8 — Painel admin de configuração ✅ 2026-07-06 (commit aa56aa0). /admin/automation/settings (admin-only) + AutomationSettingsForm (preview de slots) + automation.actions (get/save c/ validação "último slot < meia-noite"). Aceite: rota protegida, validações OK, gravação persiste e cron lê. Link já no menu admin.
