@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { requireAdmin } from "@/server/auth.helpers";
 import { supabaseAdmin } from "@/lib/db/supabase-admin";
 import { formatDate } from "@/lib/posts";
@@ -70,7 +71,11 @@ export default async function AdminPostsPage() {
                 const cat = Array.isArray(p.categories) ? p.categories[0] : p.categories;
                 return (
                   <tr key={p.id} className="border-b border-black/5 last:border-0">
-                    <td className="px-5 py-3 font-medium text-ink">{p.title}</td>
+                    <td className="px-5 py-3 font-medium text-ink">
+                      <Link href={`/admin/posts/${p.id}`} className="hover:text-brand hover:underline">
+                        {p.title}
+                      </Link>
+                    </td>
                     <td className="px-5 py-3 text-ink-muted">{cat?.name ?? "—"}</td>
                     <td className="px-5 py-3">
                       <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-semibold text-ink-soft">
