@@ -56,10 +56,33 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Rodapé obrigatório — RDC 622/2022 da ANVISA */}
+      <div className="border-t border-white/10">
+        <div className="container-x grid gap-6 py-8 text-xs leading-relaxed text-white/60 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <p className="font-semibold text-white/80">Razão Social</p>
+            <p className="mt-1">{site.legal.razaoSocial}</p>
+            <p className="mt-1">CNPJ: {site.legal.cnpj}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-white/80">Endereço da sede</p>
+            <p className="mt-1">{site.legal.address}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-white/80">Licenças da Vigilância Sanitária</p>
+            <ul className="mt-1 space-y-1">
+              {site.legal.sanitaryLicenses.map((lic) => (
+                <li key={lic}>{lic}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="border-t border-white/10">
         <div className="container-x flex flex-col items-center justify-between gap-2 py-6 text-xs text-white/50 md:flex-row">
           <p>© {new Date().getFullYear()} {site.legalName}. Todos os direitos reservados.</p>
-          <p>Licenciada pela ANVISA · CRQ ART 9135 · Reg. Municipal 9081</p>
+          <p>Conformidade técnica com a RDC 622/2022 da ANVISA</p>
         </div>
       </div>
     </footer>

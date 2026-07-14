@@ -18,17 +18,17 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink to-brand-dark/70" />
         <div className="container-x relative grid items-center gap-10 py-20 lg:grid-cols-2 lg:py-28">
           <div className="animate-fade-up">
-            <p className="eyebrow text-brand-light">Controle de pragas e saneamento</p>
+            <p className="eyebrow text-brand-light">Saúde ambiental e proteção de patrimônio</p>
             <h1 className="mt-4 text-4xl font-extrabold leading-tight text-white sm:text-5xl">
-              Proteção completa para o seu ambiente
+              Especialistas em Saúde Ambiental e Proteção de Patrimônio
             </h1>
             <p className="mt-5 max-w-xl text-lg text-white/80">
-              {site.tagline}. Há {yearsInMarket()} anos cuidando de residências, condomínios,
-              escolas, hospitais e empresas em {site.serviceArea}.
+              Desde 2009, oferecemos soluções de alta performance em controle de pragas e higienização
+              em {site.serviceArea}. Tecnologia e conformidade técnica para cuidar do seu bem-estar.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
-              <a href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")} target="_blank" rel="noopener noreferrer" className="btn-brand">
-                Solicitar orçamento
+              <a href={whatsappLink("Olá! Gostaria de falar com um especialista.")} target="_blank" rel="noopener noreferrer" className="btn-brand">
+                Falar com um especialista
               </a>
               <Link href="/servicos" className="btn-white">
                 Nossos serviços
@@ -40,8 +40,8 @@ export default async function HomePage() {
             {[
               { n: `${yearsInMarket()}+`, l: "anos de experiência" },
               { n: "100%", l: "equipe própria" },
-              { n: "6", l: "serviços especializados" },
-              { n: "ANVISA", l: "empresa licenciada" },
+              { n: `${services.length}`, l: "serviços especializados" },
+              { n: "RDC 622", l: "conformidade ANVISA" },
             ].map((stat) => (
               <div key={stat.l} className="rounded-2xl bg-white/10 p-6 backdrop-blur">
                 <div className="text-3xl font-extrabold text-white">{stat.n}</div>
@@ -58,7 +58,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Serviços e soluções"
             title="O que fazemos por você"
-            subtitle="Soluções profissionais para o controle de pragas e o saneamento do seu imóvel, sempre com produtos de baixo impacto ambiental."
+            subtitle="Manejo Integrado de Pragas e higienização para o seu imóvel, com saneantes de baixa toxicidade e conformidade técnica com a RDC 622/2022 da ANVISA."
           />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((s) => (
@@ -126,8 +126,8 @@ export default async function HomePage() {
           </div>
           <div className="overflow-hidden rounded-3xl">
             <Image
-              src="/brand/quem-somos.jpeg"
-              alt="Equipe Sane Control em atendimento"
+              src="/images/equipe-desratizacao.jpeg"
+              alt="Equipe Sane Control em atendimento, com EPIs"
               width={1024}
               height={768}
               className="h-full w-full object-cover"
@@ -172,7 +172,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <CtaBand />
+      <CtaBand
+        title="Conheça de perto o jeito Sane Control de cuidar."
+        text="Estamos prontos para ser o seu parceiro na manutenção de um ambiente saudável e protegido."
+      />
     </>
   );
 }

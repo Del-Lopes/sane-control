@@ -5,12 +5,12 @@
 
 export const site = {
   name: "Sane Control",
-  legalName: "Sane Control Controle de Pragas",
-  tagline: "Compromisso com a segurança e manutenção do seu lar",
-  foundedYear: 2006,
+  legalName: "Sane Control Saneamento Ambiental Ltda.",
+  tagline: "Especialistas em Saúde Ambiental e Proteção de Patrimônio",
+  foundedYear: 2009,
   description:
-    "Empresa especializada em controle de pragas, higienização de reservatórios de água, sanitização de ambientes, desentupimentos e limpeza de tubulação. Atendemos residências, condomínios, escolas, hospitais e empresas em São Paulo e região metropolitana.",
-  serviceArea: "São Paulo e região metropolitana",
+    "Empresa de saneamento ambiental especializada em Manejo Integrado de Pragas (MIP), higienização de reservatórios de água, sanitização de ambientes, desentupimento e higienização de estofados. Atendemos residências, condomínios, escolas, hospitais e empresas em São Paulo e Região Metropolitana, em conformidade com a RDC 622/2022 da ANVISA.",
+  serviceArea: "São Paulo e Região Metropolitana",
   city: "Caieiras",
   state: "SP",
   // Contato real (WhatsApp extraído do site atual)
@@ -28,6 +28,15 @@ export const site = {
     "NR-33 — Trabalho em Espaços Confinados",
     "NR-35 — Trabalho em Altura",
   ],
+  // Rodapé obrigatório (RDC 622/2022) — dados reais fornecidos pela cliente.
+  legal: {
+    razaoSocial: "Sane Control Saneamento Ambiental Ltda.",
+    cnpj: "11.204.710/0001-50",
+    address: "Rua Alcides Banhe, 166 — Caieiras/SP",
+    sanitaryLicenses: [
+      "Licença da Vigilância Sanitária nº 350900701-812-000016-1-9",
+    ],
+  },
 } as const;
 
 export function whatsappLink(message?: string): string {
