@@ -2,10 +2,12 @@ import { site, whatsappLink } from "@/lib/site";
 
 export default function CtaBand({
   title = "Pronto para proteger o seu ambiente?",
-  text = "Fale agora com a nossa equipe e receba um orçamento sem compromisso.",
+  text = "Fale agora com um especialista e receba um orçamento sem compromisso.",
+  buttonLabel = "Falar com Especialista",
 }: {
   title?: string;
   text?: string;
+  buttonLabel?: string;
 }) {
   return (
     <section className="bg-brand">
@@ -15,12 +17,12 @@ export default function CtaBand({
           <p className="mt-2 text-white/90">{text}</p>
         </div>
         <a
-          href={whatsappLink("Olá! Gostaria de solicitar um orçamento.")}
+          href={whatsappLink("Olá! Gostaria de falar com um especialista.")}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-white shrink-0"
         >
-          Chamar no WhatsApp · {site.whatsapp.display}
+          {buttonLabel} · {site.whatsapp.display}
         </a>
       </div>
     </section>

@@ -49,9 +49,9 @@ const DETECTION_RULES: Array<{ category: CategoryKey; keywords: string[] }> = [
 
 const FALLBACKS: Record<CategoryKey, (url: string) => string> = {
   'controle-de-pragas': (url) =>
-    `A Sane Control atua desde 2006 com controle de pragas em São Paulo e região, usando produtos de baixo impacto e equipe própria. Conheça o nosso <a href="${url}">serviço de controle de pragas</a>.`,
+    `A Sane Control atua desde 2009 com Manejo Integrado de Pragas em São Paulo e região, usando saneantes de baixa toxicidade e equipe própria. Conheça o nosso <a href="${url}">serviço de controle de pragas</a>.`,
   desratizacao: (url) =>
-    `Para o controle seguro de roedores, a Sane Control instala estações porta-iscas monitoradas. Saiba mais sobre a <a href="${url}">desratização profissional</a>.`,
+    `Para o controle de roedores com segurança operacional, a Sane Control instala estações porta-iscas monitoradas. Saiba mais sobre a <a href="${url}">desratização profissional</a>.`,
   descupinizacao: (url) =>
     `Cupins exigem diagnóstico especializado. A Sane Control combate cupins de madeira seca, subterrâneos e arborícolas — veja a <a href="${url}">descupinização</a>.`,
   'higienizacao-caixa-dagua': (url) =>
@@ -77,7 +77,7 @@ const enforceUrl = (html: string, correctUrl: string): string => {
   return html.replace(/<\/p>$/, ` Conheça <a href="${correctUrl}">nossos serviços</a>.</p>`)
 }
 const buildPrompt = (title: string, excerpt: string, label: string, url: string): string =>
-  `Você é um redator SEO da Sane Control (controle de pragas, São Paulo e região, desde 2006).
+  `Você é um redator SEO da Sane Control (saneamento ambiental e Manejo Integrado de Pragas, São Paulo e região, desde 2009).
 Escreva um parágrafo de fechamento conectando o tema do artigo com a empresa.
 ARTIGO — Título: ${title} | Resumo: ${excerpt}
 DADOS (use apenas estes): serviço relevante: ${label}; URL (use exatamente esta): ${url}

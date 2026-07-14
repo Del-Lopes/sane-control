@@ -9,9 +9,13 @@ import { site, whatsappLink } from "@/lib/site";
 // Itens do menu suspenso de Serviços (apontam para as páginas dedicadas)
 const servicesDropdown = [
   { href: "/servicos/controle-de-pragas", label: "Controle de Pragas" },
-  { href: "/servicos/limpeza-de-estofados", label: "Limpeza de Estofados" },
-  { href: "/servicos/higienizacao-caixa-dagua", label: "Higienização de Caixas d'Água" },
-  { href: "/servicos/desentupimento", label: "Desentupimento" },
+  { href: "/servicos/desratizacao", label: "Desratização" },
+  { href: "/servicos/descupinizacao", label: "Descupinização" },
+  { href: "/servicos/manejo-de-pombos", label: "Manejo de Pombos" },
+  { href: "/servicos/higienizacao-caixa-dagua", label: "Higienização de Reservatórios" },
+  { href: "/servicos/sanitizacao", label: "Sanitização de Ambientes" },
+  { href: "/servicos/limpeza-de-estofados", label: "Higienização de Estofados" },
+  { href: "/servicos/desentupimento", label: "Desentupimento & PPA Sane" },
 ];
 
 const nav = [

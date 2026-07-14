@@ -7,7 +7,7 @@ import CtaBand from "@/components/CtaBand";
 export const metadata: Metadata = {
   title: "Serviços e Soluções",
   description:
-    "Desinsetização, desratização, descupinização, higienização de caixas d'água, sanitização e desentupimento. Conheça os serviços da Sane Control.",
+    "Manejo Integrado de Pragas, desratização, descupinização, manejo de pombos, higienização de reservatórios, sanitização, higienização de estofados e desentupimento com PPA Sane. Conheça os serviços da Sane Control.",
 };
 
 export default function ServicosPage() {
@@ -15,8 +15,8 @@ export default function ServicosPage() {
     <>
       <PageHero
         eyebrow="Serviços e soluções"
-        title="Soluções completas em controle de pragas e saneamento"
-        subtitle="Cada serviço é executado por profissionais qualificados, com produtos de baixo impacto ambiental e monitoramento pós-atendimento."
+        title="Soluções completas em saneamento ambiental"
+        subtitle="Cada serviço é executado por profissionais capacitados em biossegurança, com saneantes de baixa toxicidade e conformidade com a RDC 622/2022 da ANVISA."
       />
 
       <section className="section">

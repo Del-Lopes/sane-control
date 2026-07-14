@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { services, getService } from "@/lib/services";
 import { site, whatsappLink } from "@/lib/site";
 import CtaBand from "@/components/CtaBand";
+import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 
 export function generateStaticParams() {
   return services.map((s) => ({ slug: s.slug }));
@@ -27,8 +29,23 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
   return (
     <>
       <section className="relative overflow-hidden bg-ink text-white">
-        <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink to-brand-dark/70" />
-        <div className="container-x relative py-16 lg:py-20">
+        {service.image && (
+          <>
+            <Image
+              src={service.image}
+              alt={`Equipe Sane Control — ${service.title}`}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center opacity-30"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink/90 to-brand-dark/70" />
+          </>
+        )}
+        {!service.image && (
+          <div className="absolute inset-0 bg-gradient-to-br from-ink via-ink to-brand-dark/70" />
+        )}
+        <div className="container-x relative py-16 lg:py-24">
           <nav className="text-sm text-white/60">
             <Link href="/servicos" className="hover:text-white">Serviços</Link>
             <span className="mx-2">/</span>
@@ -56,6 +73,23 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                 </div>
               ))}
             </div>
+
+            {service.beforeAfter && (
+              <div className="mt-12">
+                <h3 className="text-lg font-bold text-ink">Veja o resultado: antes e depois</h3>
+                <p className="mt-2 text-sm text-ink-muted">
+                  Arraste o divisor para comparar o estofado antes e depois da higienização.
+                </p>
+                <div className="mt-5">
+                  <BeforeAfterSlider
+                    before={service.beforeAfter.before}
+                    after={service.beforeAfter.after}
+                    beforeAlt={`${service.title} — antes`}
+                    afterAlt={`${service.title} — depois`}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="mt-10 flex flex-wrap gap-4">
               <a

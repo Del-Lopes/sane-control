@@ -1,6 +1,11 @@
 /**
  * Serviços reais oferecidos pela Sane Control.
- * Textos baseados no conteúdo do site atual.
+ * Textos alinhados ao brief da cliente (Novo Site 2026) e à RDC 622/2022 da ANVISA.
+ *
+ * COMPLIANCE (obrigatório):
+ *  - Proibido: "seguro", "atóxico", "inócuo", "produto natural", "sem riscos".
+ *  - Obrigatório: "baixa toxicidade", "Manejo Integrado de Pragas (MIP)",
+ *    "segurança operacional", "saneantes".
  */
 
 export type Service = {
@@ -8,131 +13,224 @@ export type Service = {
   title: string;
   short: string;
   icon: string; // emoji simples usado como ícone (sem dependência externa)
+  image?: string; // foto real da equipe (public/images) — EPIs visíveis
   description: string;
   highlights: { title: string; text: string }[];
+  // Slider antes/depois (brief — atualmente usado em Estofados).
+  // ⚠️ before/after apontam para placeholders — substituir por fotos reais.
+  beforeAfter?: { before: string; after: string };
 };
 
 export const services: Service[] = [
   {
     slug: "controle-de-pragas",
-    title: "Controle de Pragas",
-    short: "Solução completa contra insetos, roedores e cupins, com equipe própria e produtos de baixo impacto.",
+    title: "Controle de Pragas (Dedetização)",
+    short: "Manejo Integrado de Pragas contra insetos, roedores e cupins, com equipe própria e saneantes de baixa toxicidade.",
     icon: "🛡️",
+    image: "/images/controle-de-pragas.jpeg",
     description:
-      "Oferecemos um programa completo de controle de pragas urbanas, reunindo desinsetização, desratização e descupinização em um único plano de proteção. Cada atendimento é feito por profissionais qualificados, com produtos de baixo impacto ambiental e monitoramento após o serviço, garantindo a segurança de residências, condomínios, escolas, hospitais e empresas.",
+      "Desde 2009, a Sane Control cuida da saúde do seu lar ou empresa. Unimos tecnologia ao Manejo Integrado de Pragas (MIP) para oferecer um controle eficaz, em conformidade com as Boas Práticas Operacionais da ANVISA (RDC 622/2022). Nosso método não foca apenas na aplicação de saneantes, mas no gerenciamento completo do ambiente — identificamos as causas do problema para agir na raiz, priorizando ações preventivas e o uso consciente de recursos.",
     highlights: [
       {
-        title: "Desinsetização",
-        text: "Controle de insetos rasteiros e voadores — baratas, formigas, mosquitos e moscas — com pulverização, gel e nebulização.",
+        title: "Técnicas precisas e localizadas",
+        text: "Iscas em gel discretas para cozinhas e áreas sensíveis, pulverização direcionada em frestas e esconderijos, além de barreiras e monitoramento contínuo.",
       },
       {
-        title: "Desratização",
-        text: "Controle de roedores com estações porta-iscas seguras e monitoramento profissional contínuo.",
+        title: "Proteção para a família e pets",
+        text: "Utilizamos saneantes modernos, priorizando formulações de baixa toxicidade e alta seletividade, com orientação sobre o tempo de retorno ao ambiente.",
       },
       {
-        title: "Descupinização",
-        text: "Combate a cupins de madeira seca, subterrâneos e arborícolas, com ações corretivas e preventivas.",
+        title: "Pragas atendidas",
+        text: "Baratas, formigas, percevejos, pulgas, aranhas, escorpiões, moscas e mosquitos, em ambientes internos e externos.",
       },
     ],
   },
   {
     slug: "desinsetizacao",
     title: "Desinsetização",
-    short: "Controle de insetos rasteiros e voadores com produtos de baixo impacto.",
+    short: "Controle de insetos rasteiros e voadores com Manejo Integrado de Pragas e saneantes de baixa toxicidade.",
     icon: "🐜",
+    image: "/images/desinsetizacao.jpeg",
     description:
-      "O tratamento realizado nos ambientes auxilia na prevenção e mantém a saúde protegida das diversas espécies de insetos rasteiros e voadores. Utilizamos produtos de baixo impacto ambiental, aplicados por profissionais qualificados de acordo com cada tipo de infestação.",
+      "O Manejo Integrado de Pragas auxilia na prevenção e no controle das diversas espécies de insetos rasteiros e voadores. Utilizamos saneantes de baixa toxicidade, aplicados por profissionais capacitados em biossegurança de acordo com cada tipo de infestação, sempre com segurança operacional e conformidade com a RDC 622/2022 da ANVISA.",
     highlights: [
       {
-        title: "Desinsetização líquida / pulverização",
-        text: "Combate a insetos rasteiros por meio de spray orgânico diluído em água, aplicado em rodapés e pontos estratégicos.",
+        title: "Pulverização direcionada",
+        text: "Aplicação estratégica de saneantes em rodapés, frestas e pontos críticos para o controle de insetos rasteiros.",
       },
       {
-        title: "Desinsetização em gel",
-        text: "Aplicação de iscas em frestas e fendas para o controle de baratas e formigas, sem interromper a rotina do ambiente.",
+        title: "Iscas em gel",
+        text: "Aplicação discreta em frestas e fendas para o controle de baratas e formigas, sem interromper a rotina do ambiente.",
       },
       {
         title: "Insetos voadores",
-        text: "Atomização e termonebulização para o controle de mosquitos, moscas e outros insetos voadores.",
+        text: "Nebulização e atomização para o controle de mosquitos, moscas e outros insetos voadores.",
       },
     ],
   },
   {
     slug: "desratizacao",
     title: "Desratização",
-    short: "Controle de roedores com medidas preventivas, corretivas e monitoramento.",
+    short: "Controle de roedores com porta-iscas com chave, iscas de alta atratividade e barreiras físicas.",
     icon: "🐀",
+    image: "/images/desratizacao.jpeg",
     description:
-      "Controle de roedores por meio de medidas preventivas e corretivas, com a instalação de estações porta-iscas trancadas e seguras, além de monitoramento profissional contínuo para garantir a eliminação e evitar novas infestações.",
+      "Ratos e camundongos representam riscos sérios à saúde e à estrutura do seu patrimônio. O controle de roedores exige mais do que a aplicação de saneantes: requer o estudo do comportamento da praga. Seguimos as Boas Práticas Operacionais da ANVISA, garantindo que o Manejo Integrado de Pragas seja feito de forma técnica e responsável, com documentação essencial para empresas e condomínios em dia com a Vigilância Sanitária.",
     highlights: [
-      { title: "Estações porta-iscas", text: "Instalação de estações trancadas, seguras para pessoas e animais domésticos." },
-      { title: "Monitoramento", text: "Acompanhamento periódico e reposição de iscas conforme a necessidade." },
-      { title: "Ações preventivas", text: "Identificação de pontos de acesso e orientação para bloqueio de entradas." },
+      {
+        title: "Porta-iscas com chave",
+        text: "Dispositivos de segurança (PPE) que impedem o acesso de crianças ou pets ao conteúdo interno.",
+      },
+      {
+        title: "Iscas de alta atratividade",
+        text: "Formulações modernas que atraem os roedores de forma eficaz, agindo sobre a colônia.",
+      },
+      {
+        title: "Barreiras físicas",
+        text: "Identificação e orientação sobre o fechamento de frestas, ralos e vãos. Atendemos ratazanas, ratos de telhado e camundongos.",
+      },
     ],
   },
   {
     slug: "descupinizacao",
     title: "Descupinização",
-    short: "Combate a cupins de madeira seca, subterrâneos e arborícolas.",
+    short: "Eliminação de colônias de cupins com sistema de iscas e barreira química, preservando o patrimônio.",
     icon: "🪵",
+    image: "/images/descupinizacao.jpeg",
     description:
-      "Sistema de ações para combater cupins de madeira seca, subterrâneos e arborícolas. Aliamos ações corretivas e preventivas a produtos de alto desempenho, protegendo estruturas de madeira, móveis e o patrimônio do imóvel.",
+      "Cupins podem causar danos estruturais severos antes mesmo de serem notados. O controle de cupins exige conhecimento profundo da biologia de cada espécie. Nossa equipe segue rigorosamente as Boas Práticas Operacionais da ANVISA (RDC 622/2022), utilizando tecnologia para identificar focos e aplicar a estratégia correta. Emitimos o Comprovante de Execução de Serviço com dados do Responsável Técnico.",
     highlights: [
-      { title: "Madeira seca", text: "Tratamento localizado em móveis e estruturas afetadas." },
-      { title: "Subterrâneos", text: "Barreiras químicas no solo para proteção da edificação." },
-      { title: "Preventivo", text: "Aplicação em madeiramentos novos e áreas de risco." },
+      {
+        title: "Sistema de iscas Cupinout®",
+        text: "Para cupins subterrâneos (Coptotermes gestroi e Heterotermes spp.), elimina a colônia pela raiz sem perfurações nem interdição do local.",
+      },
+      {
+        title: "Barreira química e injeção em madeira",
+        text: "Aplicação estratégica no solo e em pontos críticos, além da proteção direta de móveis, forros e guarnições.",
+      },
+      {
+        title: "Tratamento de condutes",
+        text: "Bloqueio das rotas de passagem pela rede elétrica. Atendemos cupim de madeira seca, cupim subterrâneo e brocas de madeira.",
+      },
+    ],
+  },
+  {
+    slug: "manejo-de-pombos",
+    title: "Manejo de Pombos",
+    short: "Sistema eletromagnético de repulsão que impede o pouso de pombos, com respeito à natureza.",
+    icon: "🕊️",
+    image: "/images/manejo-de-pombos.jpeg",
+    description:
+      "Oferecemos um sistema exclusivo de manejo de pombos que gera um campo eletromagnético imperceptível para humanos e outros animais, mas que impede o pouso das aves. Uma solução tecnológica e sustentável para a proteção de patrimônio, com respeito à natureza e conformidade técnica.",
+    highlights: [
+      {
+        title: "Alta eficácia",
+        text: "Redução drástica da presença de aves no local, com eficácia de até 100%.",
+      },
+      {
+        title: "Sustentável e silencioso",
+        text: "Baixo consumo de energia e operação totalmente silenciosa.",
+      },
+      {
+        title: "Estética preservada",
+        text: "Instalação discreta que não interfere na fachada do imóvel.",
+      },
     ],
   },
   {
     slug: "higienizacao-caixa-dagua",
-    title: "Higienização de Caixas d'Água",
-    short: "Limpeza de reservatórios com escovação e desinfecção, sem desperdício.",
+    title: "Higienização de Reservatórios (Caixas d'Água)",
+    short: "Limpeza e desinfecção de reservatórios com saneantes de baixa toxicidade para água de qualidade.",
     icon: "💧",
+    image: "/images/equipe-veiculo.jpeg",
     description:
-      "Limpeza de reservatórios com esgotamento, escovação das paredes e aplicação de hipoclorito de sódio para a eliminação de bactérias. Um serviço essencial para garantir a qualidade da água consumida em residências e empresas.",
+      "Água pura e saúde para a sua família. Realizamos a higienização de reservatórios com protocolo técnico de limpeza e desinfecção, essencial para garantir a qualidade da água consumida em residências, condomínios e empresas em São Paulo, Caieiras e Região.",
     highlights: [
-      { title: "Escovação completa", text: "Remoção de resíduos e sujidades das paredes e fundo do reservatório." },
-      { title: "Desinfecção", text: "Aplicação de produto adequado para eliminação de bactérias." },
-      { title: "Relatório", text: "Registro do serviço para controle sanitário e vistorias." },
+      {
+        title: "Esgotamento e limpeza mecânica",
+        text: "Remoção de lodo, lama e detritos das paredes e do fundo do reservatório.",
+      },
+      {
+        title: "Desinfecção química",
+        text: "Utilização de saneantes específicos de baixa toxicidade para a eliminação de bactérias.",
+      },
+      {
+        title: "Inspeção de integridade",
+        text: "Verificação de boias, tampas e rachaduras, com registro do serviço para controle sanitário.",
+      },
     ],
   },
   {
     slug: "sanitizacao",
-    title: "Sanitização",
-    short: "Desinfecção de ambientes contra fungos, bactérias e vírus.",
+    title: "Sanitização de Ambientes",
+    short: "Nebulização UBV com saneantes de baixa toxicidade para a biossegurança de ambientes.",
     icon: "🧴",
+    image: "/images/sanitizacao.jpeg",
     description:
-      "Tratamento desinfetante por nebulização para controlar fungos, bactérias e vírus em residências, escolas, restaurantes e empresas. Ideal para ambientes que exigem alto padrão de higiene e segurança.",
+      "Biossegurança para quem você ama. Utilizamos o método de Nebulização de Ultra Baixo Volume (UBV), que permite que o saneante alcance locais onde a limpeza manual não chega, como dutos de ar e frestas. Ideal para residências, escolas, restaurantes e empresas que exigem alto padrão de higiene.",
     highlights: [
-      { title: "Nebulização", text: "Cobertura uniforme de superfícies e ambientes de difícil acesso." },
-      { title: "Ambientes coletivos", text: "Escolas, clínicas, restaurantes e áreas de grande circulação." },
-      { title: "Baixo impacto", text: "Produtos adequados que permitem o rápido retorno ao ambiente." },
+      {
+        title: "Nebulização UBV",
+        text: "Cobertura uniforme de superfícies e ambientes de difícil acesso, como dutos de ar e frestas.",
+      },
+      {
+        title: "Ambientes coletivos",
+        text: "Escolas, clínicas, restaurantes e áreas de grande circulação que exigem alto padrão de higiene.",
+      },
+      {
+        title: "Baixa toxicidade",
+        text: "Saneantes adequados que permitem o retorno ao ambiente com segurança operacional.",
+      },
     ],
   },
   {
     slug: "limpeza-de-estofados",
-    title: "Limpeza de Estofados",
-    short: "Higienização profunda de sofás, poltronas, colchões e cadeiras.",
+    title: "Higienização e Impermeabilização de Estofados",
+    short: "Extração por sucção, ação sanitizante e barreira invisível contra líquidos e manchas.",
     icon: "🛋️",
+    image: "/images/sanitizacao-veiculo.jpeg",
     description:
-      "Higienização profunda de estofados em geral — sofás, poltronas, colchões, cadeiras e cabeceiras. O processo remove ácaros, fungos, manchas e odores, contribuindo para um ambiente mais limpo, saudável e livre de agentes que causam alergias respiratórias.",
+      "Saúde e renovação para o seu ambiente. Nosso protocolo de limpeza e proteção total remove sujeira incrustada, ácaros e agentes que causam alergias respiratórias, além de aplicar uma camada de impermeabilização que protege o tecido no dia a dia.",
     highlights: [
-      { title: "Extração profunda", text: "Remoção de sujeira impregnada, ácaros e resíduos com equipamento de extração." },
-      { title: "Antimanchas e odores", text: "Tratamento que ajuda a eliminar manchas e neutralizar odores do tecido." },
-      { title: "Secagem rápida", text: "Processo que permite o retorno ao uso em pouco tempo, sem encharcar o estofado." },
+      {
+        title: "Extração por sucção",
+        text: "Remoção da sujeira incrustada, ácaros e resíduos com equipamento de extração.",
+      },
+      {
+        title: "Ação sanitizante",
+        text: "Agente desinfetante com laudo de garantia, contribuindo para um ambiente mais saudável.",
+      },
+      {
+        title: "Impermeabilização",
+        text: "Barreira invisível contra líquidos e manchas, prolongando a vida útil do estofado.",
+      },
     ],
+    beforeAfter: {
+      before: "/images/estofado-antes.svg",
+      after: "/images/estofado-depois.svg",
+    },
   },
   {
     slug: "desentupimento",
-    title: "Desentupimento",
-    short: "Limpeza de tubulações, poços pluviais e caixas de gordura.",
+    title: "Desentupimento & PPA Sane",
+    short: "Desentupimento com fluxo livre e o PPA Sane — Plano de Prevenção de Alagamento com limpeza programada.",
     icon: "🔧",
+    image: "/images/equipe-atendimento.jpeg",
     description:
-      "Limpeza de tubulações, poços pluviais e caixas de gordura por meio de cabos espirais rotativos e bombas de sucção. Resolvemos entupimentos com agilidade, evitando transtornos e prejuízos ao imóvel.",
+      "Fluxo livre e sem preocupações. Realizamos o desentupimento de tubulações, poços pluviais e caixas de gordura, resolvendo obstruções com agilidade. Também oferecemos o PPA Sane — Plano de Prevenção de Alagamento Sane, nosso serviço de manutenção preventiva desenhado para evitar transtornos com chuvas ou falhas no sistema de esgoto por meio de limpeza programada e escoamento garantido.",
     highlights: [
-      { title: "Cabos rotativos", text: "Desobstrução de tubulações residenciais e comerciais." },
-      { title: "Sucção", text: "Limpeza de poços pluviais e caixas de gordura." },
-      { title: "Prevenção", text: "Orientação para evitar novos entupimentos." },
+      {
+        title: "Desentupimento ágil",
+        text: "Desobstrução de tubulações residenciais e comerciais com cabos espirais rotativos e bombas de sucção.",
+      },
+      {
+        title: "PPA Sane — prevenção de alagamento",
+        text: "Plano de manutenção preventiva com limpeza programada para evitar alagamentos em períodos de chuva.",
+      },
+      {
+        title: "Escoamento garantido",
+        text: "Limpeza de poços pluviais e caixas de gordura, com orientação para evitar novas obstruções.",
+      },
     ],
   },
 ];
@@ -142,16 +240,16 @@ export function getService(slug: string): Service | undefined {
 }
 
 export const differentials: { title: string; text: string; icon: string }[] = [
-  { icon: "🌿", title: "Produtos de baixo impacto", text: "Inseticidas orgânicos que respeitam o meio ambiente e a saúde da sua família." },
-  { icon: "💧", title: "Caixa d'água sem esvaziar", text: "Higienização do reservatório sem desperdício de água." },
-  { icon: "👷", title: "Equipe própria", text: "Profissionais treinados e registrados, sem terceirização, com frota própria." },
-  { icon: "🔎", title: "Monitoramento pós-serviço", text: "Acompanhamento e orientação preventiva após cada atendimento." },
+  { icon: "🔬", title: "Manejo Integrado de Pragas", text: "Gerenciamos o ambiente de forma inteligente e sustentável, agindo na raiz do problema — não apenas aplicando saneantes." },
+  { icon: "📋", title: "Rigor normativo", text: "Operamos com licenças plenas da Vigilância Sanitária, em conformidade com a RDC 622/2022 da ANVISA." },
+  { icon: "🧪", title: "Saneantes de baixa toxicidade", text: "Tecnologia seletiva que prioriza a segurança operacional de crianças, idosos e animais de estimação." },
+  { icon: "👷", title: "Equipe própria e capacitada", text: "Profissionais próprios, com treinamento contínuo em biossegurança e novas tecnologias de controle ambiental." },
 ];
 
 export const segments: { title: string; text: string; icon: string }[] = [
-  { icon: "🏠", title: "Residencial", text: "Proteção completa para casas e apartamentos, com segurança para toda a família." },
-  { icon: "🏢", title: "Condomínios", text: "Planos de controle contínuo para áreas comuns e coletivas." },
-  { icon: "🏫", title: "Escolas", text: "Ambientes seguros e higienizados para alunos e colaboradores." },
-  { icon: "🏥", title: "Hospitais e clínicas", text: "Padrões rigorosos de sanitização para áreas de saúde." },
-  { icon: "🏬", title: "Empresas e comércios", text: "Conformidade sanitária e prevenção para o seu negócio." },
+  { icon: "🏠", title: "Residencial", text: "Proteção completa para casas e apartamentos, com atenção ao bem-estar de toda a família." },
+  { icon: "🏢", title: "Condomínios", text: "Planos de controle contínuo para áreas comuns e coletivas, com documentação para a Vigilância Sanitária." },
+  { icon: "🏭", title: "Industrial", text: "Conformidade sanitária e Manejo Integrado de Pragas para indústrias e grandes estruturas." },
+  { icon: "🏫", title: "Escolas", text: "Ambientes higienizados para alunos e colaboradores, com saneantes de baixa toxicidade." },
+  { icon: "🏥", title: "Hospitais e clínicas", text: "Padrões rigorosos de sanitização e biossegurança para áreas de saúde." },
 ];
