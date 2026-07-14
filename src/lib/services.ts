@@ -8,11 +8,33 @@
  *    "segurança operacional", "saneantes".
  */
 
+import type { LucideIcon } from "lucide-react";
+import {
+  ShieldCheck,
+  Bug,
+  Rat,
+  TreePine,
+  Bird,
+  Droplets,
+  SprayCan,
+  Sofa,
+  Wrench,
+  Microscope,
+  ClipboardCheck,
+  FlaskConical,
+  HardHat,
+  Home,
+  Building2,
+  Factory,
+  GraduationCap,
+  Stethoscope,
+} from "lucide-react";
+
 export type Service = {
   slug: string;
   title: string;
   short: string;
-  icon: string; // emoji simples usado como ícone (sem dependência externa)
+  icon: LucideIcon; // ícone lucide-react (herda a cor via currentColor)
   image?: string; // foto real da equipe (public/images) — EPIs visíveis
   description: string;
   highlights: { title: string; text: string }[];
@@ -26,7 +48,7 @@ export const services: Service[] = [
     slug: "controle-de-pragas",
     title: "Controle de Pragas (Dedetização)",
     short: "Manejo Integrado de Pragas contra insetos, roedores e cupins, com equipe própria e saneantes de baixa toxicidade.",
-    icon: "🛡️",
+    icon: ShieldCheck,
     image: "/images/controle-de-pragas.jpeg",
     description:
       "Desde 2009, a Sane Control cuida da saúde do seu lar ou empresa. Unimos tecnologia ao Manejo Integrado de Pragas (MIP) para oferecer um controle eficaz, em conformidade com as Boas Práticas Operacionais da ANVISA (RDC 622/2022). Nosso método não foca apenas na aplicação de saneantes, mas no gerenciamento completo do ambiente — identificamos as causas do problema para agir na raiz, priorizando ações preventivas e o uso consciente de recursos.",
@@ -49,7 +71,7 @@ export const services: Service[] = [
     slug: "desinsetizacao",
     title: "Desinsetização",
     short: "Controle de insetos rasteiros e voadores com Manejo Integrado de Pragas e saneantes de baixa toxicidade.",
-    icon: "🐜",
+    icon: Bug,
     image: "/images/desinsetizacao.jpeg",
     description:
       "O Manejo Integrado de Pragas auxilia na prevenção e no controle das diversas espécies de insetos rasteiros e voadores. Utilizamos saneantes de baixa toxicidade, aplicados por profissionais capacitados em biossegurança de acordo com cada tipo de infestação, sempre com segurança operacional e conformidade com a RDC 622/2022 da ANVISA.",
@@ -72,7 +94,7 @@ export const services: Service[] = [
     slug: "desratizacao",
     title: "Desratização",
     short: "Controle de roedores com porta-iscas com chave, iscas de alta atratividade e barreiras físicas.",
-    icon: "🐀",
+    icon: Rat,
     image: "/images/desratizacao.jpeg",
     description:
       "Ratos e camundongos representam riscos sérios à saúde e à estrutura do seu patrimônio. O controle de roedores exige mais do que a aplicação de saneantes: requer o estudo do comportamento da praga. Seguimos as Boas Práticas Operacionais da ANVISA, garantindo que o Manejo Integrado de Pragas seja feito de forma técnica e responsável, com documentação essencial para empresas e condomínios em dia com a Vigilância Sanitária.",
@@ -95,7 +117,7 @@ export const services: Service[] = [
     slug: "descupinizacao",
     title: "Descupinização",
     short: "Eliminação de colônias de cupins com sistema de iscas e barreira química, preservando o patrimônio.",
-    icon: "🪵",
+    icon: TreePine,
     image: "/images/descupinizacao.jpeg",
     description:
       "Cupins podem causar danos estruturais severos antes mesmo de serem notados. O controle de cupins exige conhecimento profundo da biologia de cada espécie. Nossa equipe segue rigorosamente as Boas Práticas Operacionais da ANVISA (RDC 622/2022), utilizando tecnologia para identificar focos e aplicar a estratégia correta. Emitimos o Comprovante de Execução de Serviço com dados do Responsável Técnico.",
@@ -118,7 +140,7 @@ export const services: Service[] = [
     slug: "manejo-de-pombos",
     title: "Manejo de Pombos",
     short: "Sistema eletromagnético de repulsão que impede o pouso de pombos, com respeito à natureza.",
-    icon: "🕊️",
+    icon: Bird,
     image: "/images/manejo-de-pombos.jpeg",
     description:
       "Oferecemos um sistema exclusivo de manejo de pombos que gera um campo eletromagnético imperceptível para humanos e outros animais, mas que impede o pouso das aves. Uma solução tecnológica e sustentável para a proteção de patrimônio, com respeito à natureza e conformidade técnica.",
@@ -141,7 +163,7 @@ export const services: Service[] = [
     slug: "higienizacao-caixa-dagua",
     title: "Higienização de Reservatórios (Caixas d'Água)",
     short: "Limpeza e desinfecção de reservatórios com saneantes de baixa toxicidade para água de qualidade.",
-    icon: "💧",
+    icon: Droplets,
     image: "/images/equipe-veiculo.jpeg",
     description:
       "Água pura e saúde para a sua família. Realizamos a higienização de reservatórios com protocolo técnico de limpeza e desinfecção, essencial para garantir a qualidade da água consumida em residências, condomínios e empresas em São Paulo, Caieiras e Região.",
@@ -164,7 +186,7 @@ export const services: Service[] = [
     slug: "sanitizacao",
     title: "Sanitização de Ambientes",
     short: "Nebulização UBV com saneantes de baixa toxicidade para a biossegurança de ambientes.",
-    icon: "🧴",
+    icon: SprayCan,
     image: "/images/sanitizacao.jpeg",
     description:
       "Biossegurança para quem você ama. Utilizamos o método de Nebulização de Ultra Baixo Volume (UBV), que permite que o saneante alcance locais onde a limpeza manual não chega, como dutos de ar e frestas. Ideal para residências, escolas, restaurantes e empresas que exigem alto padrão de higiene.",
@@ -187,7 +209,7 @@ export const services: Service[] = [
     slug: "limpeza-de-estofados",
     title: "Higienização e Impermeabilização de Estofados",
     short: "Extração por sucção, ação sanitizante e barreira invisível contra líquidos e manchas.",
-    icon: "🛋️",
+    icon: Sofa,
     image: "/images/sanitizacao-veiculo.jpeg",
     description:
       "Saúde e renovação para o seu ambiente. Nosso protocolo de limpeza e proteção total remove sujeira incrustada, ácaros e agentes que causam alergias respiratórias, além de aplicar uma camada de impermeabilização que protege o tecido no dia a dia.",
@@ -214,7 +236,7 @@ export const services: Service[] = [
     slug: "desentupimento",
     title: "Desentupimento & PPA Sane",
     short: "Desentupimento com fluxo livre e o PPA Sane — Plano de Prevenção de Alagamento com limpeza programada.",
-    icon: "🔧",
+    icon: Wrench,
     image: "/images/equipe-atendimento.jpeg",
     description:
       "Fluxo livre e sem preocupações. Realizamos o desentupimento de tubulações, poços pluviais e caixas de gordura, resolvendo obstruções com agilidade. Também oferecemos o PPA Sane — Plano de Prevenção de Alagamento Sane, nosso serviço de manutenção preventiva desenhado para evitar transtornos com chuvas ou falhas no sistema de esgoto por meio de limpeza programada e escoamento garantido.",
@@ -239,17 +261,17 @@ export function getService(slug: string): Service | undefined {
   return services.find((s) => s.slug === slug);
 }
 
-export const differentials: { title: string; text: string; icon: string }[] = [
-  { icon: "🔬", title: "Manejo Integrado de Pragas", text: "Gerenciamos o ambiente de forma inteligente e sustentável, agindo na raiz do problema — não apenas aplicando saneantes." },
-  { icon: "📋", title: "Rigor normativo", text: "Operamos com licenças plenas da Vigilância Sanitária, em conformidade com a RDC 622/2022 da ANVISA." },
-  { icon: "🧪", title: "Saneantes de baixa toxicidade", text: "Tecnologia seletiva que prioriza a segurança operacional de crianças, idosos e animais de estimação." },
-  { icon: "👷", title: "Equipe própria e capacitada", text: "Profissionais próprios, com treinamento contínuo em biossegurança e novas tecnologias de controle ambiental." },
+export const differentials: { title: string; text: string; icon: LucideIcon }[] = [
+  { icon: Microscope, title: "Manejo Integrado de Pragas", text: "Gerenciamos o ambiente de forma inteligente e sustentável, agindo na raiz do problema — não apenas aplicando saneantes." },
+  { icon: ClipboardCheck, title: "Rigor normativo", text: "Operamos com licenças plenas da Vigilância Sanitária, em conformidade com a RDC 622/2022 da ANVISA." },
+  { icon: FlaskConical, title: "Saneantes de baixa toxicidade", text: "Tecnologia seletiva que prioriza a segurança operacional de crianças, idosos e animais de estimação." },
+  { icon: HardHat, title: "Equipe própria e capacitada", text: "Profissionais próprios, com treinamento contínuo em biossegurança e novas tecnologias de controle ambiental." },
 ];
 
-export const segments: { title: string; text: string; icon: string }[] = [
-  { icon: "🏠", title: "Residencial", text: "Proteção completa para casas e apartamentos, com atenção ao bem-estar de toda a família." },
-  { icon: "🏢", title: "Condomínios", text: "Planos de controle contínuo para áreas comuns e coletivas, com documentação para a Vigilância Sanitária." },
-  { icon: "🏭", title: "Industrial", text: "Conformidade sanitária e Manejo Integrado de Pragas para indústrias e grandes estruturas." },
-  { icon: "🏫", title: "Escolas", text: "Ambientes higienizados para alunos e colaboradores, com saneantes de baixa toxicidade." },
-  { icon: "🏥", title: "Hospitais e clínicas", text: "Padrões rigorosos de sanitização e biossegurança para áreas de saúde." },
+export const segments: { title: string; text: string; icon: LucideIcon }[] = [
+  { icon: Home, title: "Residencial", text: "Proteção completa para casas e apartamentos, com atenção ao bem-estar de toda a família." },
+  { icon: Building2, title: "Condomínios", text: "Planos de controle contínuo para áreas comuns e coletivas, com documentação para a Vigilância Sanitária." },
+  { icon: Factory, title: "Industrial", text: "Conformidade sanitária e Manejo Integrado de Pragas para indústrias e grandes estruturas." },
+  { icon: GraduationCap, title: "Escolas", text: "Ambientes higienizados para alunos e colaboradores, com saneantes de baixa toxicidade." },
+  { icon: Stethoscope, title: "Hospitais e clínicas", text: "Padrões rigorosos de sanitização e biossegurança para áreas de saúde." },
 ];

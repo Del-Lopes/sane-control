@@ -20,13 +20,16 @@ export default function AreasPage() {
 
       <section className="section">
         <div className="container-x grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {segments.map((seg) => (
+          {segments.map((seg) => {
+            const Icon = seg.icon;
+            return (
             <div key={seg.title} className="rounded-2xl border border-black/5 bg-white p-8 shadow-sm">
-              <div className="text-4xl">{seg.icon}</div>
+              <Icon className="h-10 w-10 text-brand" strokeWidth={1.75} aria-hidden />
               <h2 className="mt-4 text-xl font-bold text-ink">{seg.title}</h2>
               <p className="mt-2 leading-relaxed text-ink-muted">{seg.text}</p>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

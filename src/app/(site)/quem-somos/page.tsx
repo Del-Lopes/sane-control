@@ -180,11 +180,46 @@ export default function QuemSomosPage() {
         <div className="container-x">
           <SectionHeading eyebrow="Diferenciais" title="Por que escolher a Sane Control" center />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {differentials.map((d) => (
+            {differentials.map((d) => {
+              const Icon = d.icon;
+              return (
               <div key={d.title} className="rounded-2xl border border-black/5 bg-white p-7 text-center shadow-sm">
-                <div className="text-4xl">{d.icon}</div>
+                <Icon className="mx-auto h-9 w-9 text-brand" strokeWidth={1.75} aria-hidden />
                 <h3 className="mt-4 text-base font-bold text-ink">{d.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{d.text}</p>
+              </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Galeria — equipe em campo */}
+      <section className="section bg-brand-soft/40">
+        <div className="container-x">
+          <SectionHeading
+            eyebrow="Nossa equipe em campo"
+            title="Trabalho técnico, com segurança operacional"
+            subtitle="Registros reais dos nossos profissionais em atendimento — sempre com EPIs e o rigor que a RDC 622/2022 exige."
+            center
+          />
+          <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {[
+              { src: "/images/controle-de-pragas.jpeg", alt: "Pulverização direcionada em atendimento" },
+              { src: "/images/galeria-porta-isca.jpeg", alt: "Instalação de porta-iscas para roedores" },
+              { src: "/images/descupinizacao.jpeg", alt: "Descupinização com perfuratriz no solo" },
+              { src: "/images/sanitizacao.jpeg", alt: "Sanitização por nebulização UBV" },
+              { src: "/images/galeria-monitoramento.jpeg", alt: "Monitoramento de estações em área externa" },
+              { src: "/images/galeria-veiculo-ubv.jpeg", alt: "Sanitização de veículo com equipamento UBV" },
+            ].map((img) => (
+              <div key={img.src} className="group relative aspect-square overflow-hidden rounded-2xl">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 33vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
               </div>
             ))}
           </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MessageCircle, MapPin, Clock } from "lucide-react";
 import { site, whatsappLink } from "@/lib/site";
 import PageHero from "@/components/PageHero";
 import ContactForm from "@/components/ContactForm";
@@ -23,7 +24,7 @@ export default function ContatoPage() {
             <h2 className="text-2xl font-bold text-ink">Informações de contato</h2>
             <ul className="mt-6 space-y-6">
               <li className="flex items-start gap-4">
-                <span className="text-2xl">💬</span>
+                <MessageCircle className="mt-0.5 h-6 w-6 shrink-0 text-brand" strokeWidth={1.75} aria-hidden />
                 <div>
                   <p className="font-semibold text-ink">WhatsApp</p>
                   <a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">
@@ -32,7 +33,7 @@ export default function ContatoPage() {
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <span className="text-2xl">📍</span>
+                <MapPin className="mt-0.5 h-6 w-6 shrink-0 text-brand" strokeWidth={1.75} aria-hidden />
                 <div>
                   <p className="font-semibold text-ink">Localização</p>
                   <p className="text-ink-muted">{site.city} — {site.state}</p>
@@ -40,7 +41,7 @@ export default function ContatoPage() {
                 </div>
               </li>
               <li className="flex items-start gap-4">
-                <span className="text-2xl">🕗</span>
+                <Clock className="mt-0.5 h-6 w-6 shrink-0 text-brand" strokeWidth={1.75} aria-hidden />
                 <div>
                   <p className="font-semibold text-ink">Horário de atendimento</p>
                   <p className="text-ink-muted">{site.phoneHours}</p>

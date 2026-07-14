@@ -61,13 +61,15 @@ export default async function HomePage() {
             subtitle="Manejo Integrado de Pragas e higienização para o seu imóvel, com saneantes de baixa toxicidade e conformidade técnica com a RDC 622/2022 da ANVISA."
           />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {services.map((s) => (
+            {services.map((s) => {
+              const Icon = s.icon;
+              return (
               <Link
                 key={s.slug}
                 href={`/servicos/${s.slug}`}
                 className="group rounded-2xl border border-black/5 bg-white p-7 shadow-sm transition-all hover:-translate-y-1 hover:border-brand/30 hover:shadow-md"
               >
-                <div className="text-4xl">{s.icon}</div>
+                <Icon className="h-9 w-9 text-brand" strokeWidth={1.75} aria-hidden />
                 <h3 className="mt-4 text-lg font-bold text-ink">{s.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{s.short}</p>
                 <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand">
@@ -75,7 +77,8 @@ export default async function HomePage() {
                   <span className="transition-transform group-hover:translate-x-1">→</span>
                 </span>
               </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -89,13 +92,16 @@ export default async function HomePage() {
             center
           />
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {differentials.map((d) => (
+            {differentials.map((d) => {
+              const Icon = d.icon;
+              return (
               <div key={d.title} className="rounded-2xl bg-white p-7 text-center shadow-sm">
-                <div className="text-4xl">{d.icon}</div>
+                <Icon className="mx-auto h-9 w-9 text-brand" strokeWidth={1.75} aria-hidden />
                 <h3 className="mt-4 text-base font-bold text-ink">{d.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-muted">{d.text}</p>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -110,15 +116,18 @@ export default async function HomePage() {
               subtitle="Do residencial ao hospitalar, adaptamos cada plano de controle às necessidades e às normas do seu ambiente."
             />
             <ul className="mt-8 space-y-4">
-              {segments.map((seg) => (
+              {segments.map((seg) => {
+                const Icon = seg.icon;
+                return (
                 <li key={seg.title} className="flex items-start gap-4">
-                  <span className="text-2xl">{seg.icon}</span>
+                  <Icon className="mt-0.5 h-6 w-6 shrink-0 text-brand" strokeWidth={1.75} aria-hidden />
                   <div>
                     <p className="font-semibold text-ink">{seg.title}</p>
                     <p className="text-sm text-ink-muted">{seg.text}</p>
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
             <Link href="/areas-de-atuacao" className="btn-outline mt-8">
               Ver todas as áreas

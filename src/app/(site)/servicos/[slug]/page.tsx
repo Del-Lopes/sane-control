@@ -25,6 +25,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
   if (!service) notFound();
 
   const others = services.filter((s) => s.slug !== service.slug);
+  const Icon = service.icon;
 
   return (
     <>
@@ -52,7 +53,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
             <span className="text-white/90">{service.title}</span>
           </nav>
           <div className="mt-6 flex items-center gap-4">
-            <span className="text-5xl">{service.icon}</span>
+            <Icon className="h-12 w-12 shrink-0 text-brand-light" strokeWidth={1.75} aria-hidden />
             <h1 className="text-3xl font-extrabold text-white sm:text-4xl lg:text-5xl">{service.title}</h1>
           </div>
         </div>
@@ -124,13 +125,16 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
             <div className="rounded-2xl border border-black/5 p-6">
               <h3 className="text-base font-bold text-ink">Outros serviços</h3>
               <ul className="mt-4 space-y-2">
-                {others.map((o) => (
+                {others.map((o) => {
+                  const OtherIcon = o.icon;
+                  return (
                   <li key={o.slug}>
                     <Link href={`/servicos/${o.slug}`} className="flex items-center gap-2 text-sm text-ink-soft hover:text-brand">
-                      <span>{o.icon}</span> {o.title}
+                      <OtherIcon className="h-4 w-4 shrink-0 text-brand" strokeWidth={1.75} aria-hidden /> {o.title}
                     </Link>
                   </li>
-                ))}
+                  );
+                })}
               </ul>
             </div>
           </aside>
