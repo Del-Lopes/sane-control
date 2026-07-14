@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { getPublishedPosts, formatDate } from "@/lib/posts";
 import PageHero from "@/components/PageHero";
 import CtaBand from "@/components/CtaBand";
+
+const FALLBACK_COVER = "/images/default-cover.svg";
 
 // Conteúdo muda sem novo deploy (posts nascem pelo cron) → renderização dinâmica.
 export const dynamic = "force-dynamic";
@@ -34,12 +37,23 @@ export default async function BlogPage() {
               <Link
                 key={p.slug}
                 href={`/blog/${p.slug}`}
-                className="group flex flex-col rounded-2xl border border-black/5 bg-white p-7 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
               >
-                <span className="text-xs font-semibold uppercase tracking-wider text-brand">{p.category}</span>
-                <h2 className="mt-3 text-xl font-bold text-ink group-hover:text-brand">{p.title}</h2>
-                <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-muted">{p.excerpt}</p>
-                <p className="mt-5 text-xs text-ink-muted">{formatDate(p.date)} · {p.readingTime}</p>
+                <div className="relative aspect-[16/9] overflow-hidden bg-brand-soft/40">
+                  <Image
+                    src={p.coverImage ?? FALLBACK_COVER}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-7">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-brand">{p.category}</span>
+                  <h2 className="mt-3 text-xl font-bold text-ink group-hover:text-brand">{p.title}</h2>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-muted">{p.excerpt}</p>
+                  <p className="mt-5 text-xs text-ink-muted">{formatDate(p.date)} · {p.readingTime}</p>
+                </div>
               </Link>
             ))}
           </div>

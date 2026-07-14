@@ -170,11 +170,22 @@ export default async function HomePage() {
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {latestPosts.map((p) => (
-              <Link key={p.slug} href={`/blog/${p.slug}`} className="group rounded-2xl border border-black/5 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
-                <span className="text-xs font-semibold uppercase tracking-wider text-brand">{p.category}</span>
-                <h3 className="mt-3 text-lg font-bold text-ink group-hover:text-brand">{p.title}</h3>
-                <p className="mt-2 text-sm text-ink-muted">{p.excerpt}</p>
-                <p className="mt-4 text-xs text-ink-muted">{formatDate(p.date)} · {p.readingTime}</p>
+              <Link key={p.slug} href={`/blog/${p.slug}`} className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+                <div className="relative aspect-[16/9] overflow-hidden bg-brand-soft/40">
+                  <Image
+                    src={p.coverImage ?? "/images/default-cover.svg"}
+                    alt={p.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-6">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-brand">{p.category}</span>
+                  <h3 className="mt-3 text-lg font-bold text-ink group-hover:text-brand">{p.title}</h3>
+                  <p className="mt-2 text-sm text-ink-muted">{p.excerpt}</p>
+                  <p className="mt-4 text-xs text-ink-muted">{formatDate(p.date)} · {p.readingTime}</p>
+                </div>
               </Link>
             ))}
           </div>
