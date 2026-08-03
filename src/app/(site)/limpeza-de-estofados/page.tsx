@@ -474,10 +474,11 @@ export default function LimpezaDeEstofadosPage() {
         <div className="container-x grid items-center gap-12 lg:grid-cols-2">
           <div className="overflow-hidden rounded-3xl">
             <Image
-              src="/images/sanitizacao.jpeg"
-              alt="Equipe Sane Control em atendimento, com EPIs"
-              width={1024}
-              height={768}
+              src="/images/estofado-3.jpg"
+              alt="Close de um sofá de couro durante o atendimento: o lado já higienizado, claro e uniforme, ao lado da parte ainda encardida"
+              width={1200}
+              height={900}
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className="h-full w-full object-cover"
             />
           </div>
