@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
-  <rect width="800" height="600" fill="#F6D9D9"/>
-  <rect x="120" y="180" width="560" height="300" rx="24" fill="#ffffff"/>
-  <rect x="150" y="210" width="220" height="120" rx="12" fill="#F6D9D9"/>
-  <text x="400" y="90" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="700" fill="#DE1E11" text-anchor="middle">DEPOIS</text>
-  <text x="400" y="540" font-family="Inter, Arial, sans-serif" font-size="22" fill="#961B1B" text-anchor="middle">Substituir por foto real do estofado — depois</text>
-</svg>

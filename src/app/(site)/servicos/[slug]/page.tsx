@@ -89,6 +89,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                     after={service.beforeAfter.after}
                     beforeAlt={`${service.title} — antes`}
                     afterAlt={`${service.title} — depois`}
+                    aspectClass="aspect-[2/1]"
                   />
                 </div>
               </div>

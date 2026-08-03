@@ -39,7 +39,8 @@ export type Service = {
   description: string;
   highlights: { title: string; text: string }[];
   // Slider antes/depois (brief — atualmente usado em Estofados).
-  // ⚠️ before/after apontam para placeholders — substituir por fotos reais.
+  // Fotos reais de atendimento; before/after devem ter o mesmo enquadramento
+  // e a mesma proporção, senão o divisor do slider revela o desalinhamento.
   beforeAfter?: { before: string; after: string };
   /**
    * Landing page de conversão dedicada a este serviço, quando existir.
@@ -234,8 +235,8 @@ export const services: Service[] = [
       },
     ],
     beforeAfter: {
-      before: "/images/estofado-antes.svg",
-      after: "/images/estofado-depois.svg",
+      before: "/images/estofado-antes.jpg",
+      after: "/images/estofado-depois.jpg",
     },
     landingPath: "/limpeza-de-estofados",
   },

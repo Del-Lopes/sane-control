@@ -325,15 +325,15 @@ export default function LimpezaDeEstofadosPage() {
         </div>
       </section>
 
-      {/* Prova visual — antes e depois */}
-      {service.beforeAfter && (
-        <section className="section bg-brand-soft/30">
-          <div className="container-x grid items-center gap-12 lg:grid-cols-2">
+      {/* Prova visual — antes e depois (fotos reais de atendimento) */}
+      <section className="section bg-brand-soft/30">
+        <div className="container-x">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
               <SectionHeading
-                eyebrow="Antes e depois"
+                eyebrow="Resultados reais"
                 title="A diferença que se vê no mesmo estofado"
-                subtitle="Arraste o divisor para comparar o resultado do nosso protocolo de higienização. O tecido volta a mostrar a cor original, sem manchas de uso nem sujeira incrustada."
+                subtitle="Arraste o divisor para comparar o antes e o depois de um atendimento real. O tecido volta a mostrar a cor original, sem as manchas de uso nem a sujeira incrustada."
               />
               <a
                 href={whatsappLink(WHATSAPP_MSG)}
@@ -344,15 +344,56 @@ export default function LimpezaDeEstofadosPage() {
                 Quero esse resultado no meu sofá
               </a>
             </div>
-            <BeforeAfterSlider
-              before={service.beforeAfter.before}
-              after={service.beforeAfter.after}
-              beforeAlt="Estofado antes da higienização"
-              afterAlt="Estofado depois da higienização"
-            />
+            {service.beforeAfter && (
+              <BeforeAfterSlider
+                before={service.beforeAfter.before}
+                after={service.beforeAfter.after}
+                beforeAlt="Sofá de dois lugares com manchas de uso, antes da higienização"
+                afterAlt="O mesmo sofá de dois lugares depois da higienização, com o tecido uniforme"
+                aspectClass="aspect-[2/1]"
+              />
+            )}
           </div>
-        </section>
-      )}
+
+          {/* Segundo caso — ângulos diferentes, então lado a lado em vez de slider */}
+          <div className="mt-16">
+            <p className="text-center text-sm font-semibold uppercase tracking-wider text-ink-muted">
+              Outro atendimento: sofá de canto com chaise
+            </p>
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              {[
+                {
+                  src: "/images/estofado-2-antes.jpg",
+                  label: "Antes",
+                  alt: "Sofá de canto com assentos encardidos e manchados, antes da higienização",
+                },
+                {
+                  src: "/images/estofado-2-depois.jpg",
+                  label: "Depois",
+                  alt: "O mesmo sofá de canto depois da higienização, com o tecido claro e uniforme",
+                },
+              ].map((img) => (
+                <figure
+                  key={img.label}
+                  className="relative overflow-hidden rounded-3xl border border-black/5 shadow-sm"
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={736}
+                    height={460}
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="aspect-[8/5] w-full object-cover"
+                  />
+                  <figcaption className="absolute left-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white">
+                    {img.label}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Protocolo */}
       <section className="section">

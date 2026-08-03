@@ -10,6 +10,8 @@ type Props = {
   afterAlt?: string;
   beforeLabel?: string;
   afterLabel?: string;
+  /** Classe de proporção do container — deve casar com o recorte das fotos. */
+  aspectClass?: string;
 };
 
 /**
@@ -23,6 +25,7 @@ export default function BeforeAfterSlider({
   afterAlt = "Depois",
   beforeLabel = "Antes",
   afterLabel = "Depois",
+  aspectClass = "aspect-[4/3]",
 }: Props) {
   const [pos, setPos] = useState(50); // % revelado da imagem "antes"
   const [width, setWidth] = useState(0); // largura medida do container (px)
@@ -67,7 +70,7 @@ export default function BeforeAfterSlider({
   return (
     <div
       ref={containerRef}
-      className="relative aspect-[4/3] w-full select-none overflow-hidden rounded-3xl border border-black/5 shadow-sm"
+      className={`relative ${aspectClass} w-full select-none overflow-hidden rounded-3xl border border-black/5 shadow-sm`}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerLeave={onPointerUp}
