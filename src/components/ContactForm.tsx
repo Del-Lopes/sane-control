@@ -4,8 +4,15 @@ import { useState } from "react";
 import { services } from "@/lib/services";
 import { whatsappLink } from "@/lib/site";
 
-export default function ContactForm() {
-  const [form, setForm] = useState({ nome: "", telefone: "", servico: "", mensagem: "" });
+export default function ContactForm({
+  defaultService = "",
+  submitLabel = "Enviar pelo WhatsApp",
+}: {
+  /** Título de um serviço (services[].title) para pré-selecionar o campo. */
+  defaultService?: string;
+  submitLabel?: string;
+} = {}) {
+  const [form, setForm] = useState({ nome: "", telefone: "", servico: defaultService, mensagem: "" });
 
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -45,7 +52,7 @@ export default function ContactForm() {
         <label className="text-sm font-medium text-ink" htmlFor="mensagem">Mensagem</label>
         <textarea id="mensagem" rows={4} value={form.mensagem} onChange={update("mensagem")} className={field} placeholder="Como podemos ajudar?" />
       </div>
-      <button type="submit" className="btn-brand w-full">Enviar pelo WhatsApp</button>
+      <button type="submit" className="btn-brand w-full">{submitLabel}</button>
     </form>
   );
 }

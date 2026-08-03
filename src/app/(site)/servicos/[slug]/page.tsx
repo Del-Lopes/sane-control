@@ -17,6 +17,8 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return {
     title: service.title,
     description: service.short,
+    // Quando há landing page dedicada, ela é a versão canônica do conteúdo.
+    ...(service.landingPath && { alternates: { canonical: service.landingPath } }),
   };
 }
 
@@ -101,6 +103,11 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
               >
                 Solicitar orçamento
               </a>
+              {service.landingPath && (
+                <Link href={service.landingPath} className="btn-outline">
+                  Ver página completa do serviço
+                </Link>
+              )}
               <Link href="/servicos" className="btn-outline">Ver todos os serviços</Link>
             </div>
           </div>
@@ -129,7 +136,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                   const OtherIcon = o.icon;
                   return (
                   <li key={o.slug}>
-                    <Link href={`/servicos/${o.slug}`} className="flex items-center gap-2 text-sm text-ink-soft hover:text-brand">
+                    <Link href={o.landingPath ?? `/servicos/${o.slug}`} className="flex items-center gap-2 text-sm text-ink-soft hover:text-brand">
                       <OtherIcon className="h-4 w-4 shrink-0 text-brand" strokeWidth={1.75} aria-hidden /> {o.title}
                     </Link>
                   </li>

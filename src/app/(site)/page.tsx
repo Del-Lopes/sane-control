@@ -66,7 +66,7 @@ export default async function HomePage() {
               return (
               <Link
                 key={s.slug}
-                href={`/servicos/${s.slug}`}
+                href={s.landingPath ?? `/servicos/${s.slug}`}
                 className="group rounded-2xl border border-black/5 bg-white p-7 shadow-sm transition-all hover:-translate-y-1 hover:border-brand/30 hover:shadow-md"
               >
                 <Icon className="h-9 w-9 text-brand" strokeWidth={1.75} aria-hidden />

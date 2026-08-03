@@ -14,7 +14,7 @@ const servicesDropdown = [
   { href: "/servicos/manejo-de-pombos", label: "Manejo de Pombos" },
   { href: "/servicos/higienizacao-caixa-dagua", label: "Higienização de Reservatórios" },
   { href: "/servicos/sanitizacao", label: "Sanitização de Ambientes" },
-  { href: "/servicos/limpeza-de-estofados", label: "Higienização de Estofados" },
+  { href: "/limpeza-de-estofados", label: "Higienização de Estofados" },
   { href: "/servicos/desentupimento", label: "Desentupimento & PPA Sane" },
 ];
 

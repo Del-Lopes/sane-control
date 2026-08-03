@@ -41,6 +41,12 @@ export type Service = {
   // Slider antes/depois (brief — atualmente usado em Estofados).
   // ⚠️ before/after apontam para placeholders — substituir por fotos reais.
   beforeAfter?: { before: string; after: string };
+  /**
+   * Landing page de conversão dedicada a este serviço, quando existir.
+   * A página em /servicos/[slug] passa a apontar o canonical para cá
+   * (evita conteúdo duplicado) e oferece o link no CTA.
+   */
+  landingPath?: string;
 };
 
 export const services: Service[] = [
@@ -231,6 +237,7 @@ export const services: Service[] = [
       before: "/images/estofado-antes.svg",
       after: "/images/estofado-depois.svg",
     },
+    landingPath: "/limpeza-de-estofados",
   },
   {
     slug: "desentupimento",

@@ -24,7 +24,7 @@ export default function Footer() {
           <ul className="mt-4 space-y-2 text-sm">
             {services.map((s) => (
               <li key={s.slug}>
-                <Link href={`/servicos/${s.slug}`} className="hover:text-white">
+                <Link href={s.landingPath ?? `/servicos/${s.slug}`} className="hover:text-white">
                   {s.title}
                 </Link>
               </li>
